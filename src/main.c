@@ -6,93 +6,72 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:05:56 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/16 16:04:26 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/20 13:13:30 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 #include <pthread.h>
-#include <sys/time.h>
 
 int	usage(void)
 {
-	ft_putstr_fd("usage : ./philo <time_die> <time_eat> <time_sleep> [n_meals]\n", 2);
+	ft_putstr_fd("usage : ./philo time_die time_eat time_sleep [n_meals]\n", 2);
 	return (1);
 }
 
-int	are_forks_busy(t_philo *philo)
-{
-	t_fork	*left_fork;
-	t_fork	*right_fork;
-	int		busy;
-
-	left_fork = philo->forks[0];
-	right_fork = philo->forks[1];
-	pthread_mutex_lock(left_fork->fork_mutex);
-	busy = (left_fork->in_use);
-	pthread_mutex_unlock(left_fork->fork_mutex);
-	pthread_mutex_lock(right_fork->fork_mutex);
-	busy = busy && right_fork->in_use;
-	pthread_mutex_unlock(right_fork->fork_mutex);
-	return (busy);
-}
 void	*routine(void *arg)
 {
 	t_philo		*philo;
+	t_table		*table;
 	t_timeval	time;
 
-	philo = ((t_philo *)arg);
-	gettimeofday(&time, philo->tz);
-	// philo_log(&time, philo, "philo is waiting start\n");
-	pthread_mutex_lock(philo->start_mutex);
-	gettimeofday(&time, philo->tz);
-	// philo_log(&time, philo, "philo started\n");
-	pthread_mutex_unlock(philo->start_mutex);
+	philo = (t_philo *)arg;
+	table = philo->table;
+	// table = ((t_table_th *)arg)->table;
+	// philo = &table->philos[((t_table_th *)arg)->index - 1];
+	gettimeofday(&time, &table->tz);
+	pthread_mutex_lock(&table->start);
+	pthread_mutex_unlock(&table->start);
+	if (philo->index % 2)
+	{
+		philo_log(table, philo, "is thinking\n");
+		smart_usleep(table, philo, table->args[T_EAT] / 2);
+	}
 	while (1)
 	{
-		gettimeofday(&time, philo->tz);
-		philo_log(&time, philo, "is thinking\n");
-		while (are_forks_busy(philo))
-		{
-			gettimeofday(&time, philo->tz);
-			if (time.tv_sec - philo->last_meal->tv_sec >= TIME_TO_DIE)
-			{
-				philo_log(&time, philo, "died\n");
-				pthread_mutex_lock(philo->write_mutex);
-				ft_printf("%d seconds since last meal\n", time.tv_sec - philo->last_meal->tv_sec);
-				pthread_mutex_unlock(philo->write_mutex);
-				return (NULL);
-			}
-			else
-				usleep(10000);
-		}
-		philo_eat(philo);
-		gettimeofday(&time, philo->tz);
-		philo_log(&time, philo, "is sleeping\n");
-		usleep(TIME_TO_SLEEP);
+		gettimeofday(&time, &table->tz);
+		if (check_death(table, philo))
+			return (NULL);
+		if (philo_eat(table, philo))
+			return (NULL);
+		if (philo_sleep(table, philo))
+			return (NULL);
+		if (philo_think(table, philo))
+			return (NULL);
 	}
 	return (NULL);
 }
 
 int	join_philos(t_table *table)
 {
-	size_t	i;
+	ssize_t	i;
 	t_philo	*philos;
 
 	philos = table->philos;
-	i = 0;
-	while (i < table->n_philos)
+	i = -1;
+	while (++i < table->n_philos)
 	{
 		if (DEBUG)
 		{
-			pthread_mutex_lock(table->philos[i].write_mutex);
+			pthread_mutex_lock(&table->write);
 			ft_printf("joining %d\n", i);
-			pthread_mutex_unlock(table->philos[i].write_mutex);
+			pthread_mutex_unlock(&table->write);
 		}
-		if (pthread_join(*(philos[i].philo_thread), NULL))
+		if (pthread_join((philos[i].philo_thread), NULL))
 			return (1);
-		++i;
 	}
+	free(table->forks);
+	free(table->philos);
 	return (0);
 }
 
@@ -101,13 +80,18 @@ int	main(int argc, char *argv[])
 	t_table			table;
 	pthread_mutex_t	write_mut;
 
-	pthread_mutex_init(&write_mut, NULL);
-	if (argc < 4 || ft_atoi(argv[1]) < 1)
+	if (pthread_mutex_init(&write_mut, NULL))
+		return (1);
+	if (argc < 5 || argc > 6)
 		return (usage());
-	init_table(&table, ft_atoi(argv[1]), &write_mut);
+	if (init_table(&table, argc, argv, &write_mut))
+		return (1);
 	if (join_philos(&table))
 		return (1);
 	pthread_mutex_destroy(&write_mut);
-	pthread_mutex_destroy(table.start);
+	pthread_mutex_destroy(&table.time_mut);
+	pthread_mutex_destroy(&table.start);
+	pthread_mutex_destroy(&table.death);
+	pthread_mutex_destroy(&table.meal_count_mutex);
 	return (0);
 }

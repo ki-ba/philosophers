@@ -6,54 +6,65 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/16 15:01:13 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/20 13:13:57 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "philosophers.h"
-#include <sys/time.h>
+#include <pthread.h>
 
-int	init_philo(t_table *table, pthread_mutex_t *write_mut, size_t index)
+int	init_philo(t_table *table, size_t index)
 {
-	t_philo	*philo;
-	size_t	n_rfork;
-	size_t	n_lfork;
+	t_philo		*philo;
+	size_t		n_rfork;
+	size_t		n_lfork;
 
 	philo = &(table->philos[index - 1]);
+	philo->dead = &(table->weird_smell);
 	philo->index = index;
-	philo->write_mutex = write_mut;
-	philo->philo_thread = ft_calloc(1, sizeof(pthread_t));
-	philo->last_meal = ft_calloc(1, sizeof(t_timeval));
-	philo->start_time = ft_calloc(1, sizeof(t_timeval));
-	gettimeofday(philo->last_meal, philo->tz);
-	gettimeofday(philo->start_time, philo->tz);
-	philo->start_time_ms = philo->start_time->tv_sec * 1000 + philo->start_time->tv_usec / 1000;
-	philo->start_mutex = table->start;
+	philo->table = table;
+	philo->n_meals = 0;
+	philo->last_meal = 0;
 	if (index == 1)
 		n_lfork = table->n_philos - 1;
 	else
 		n_lfork = (index - 2) % table->n_philos;
 	n_rfork = index - 1;
-	// pthread_mutex_lock(write_mut);
-	// ft_printf("%d forks : %d ; %d\n", philo->index, n_lfork, n_rfork);
-	// pthread_mutex_unlock(write_mut);
 	philo->forks[0] = &table->forks[n_lfork];
 	philo->forks[1] = &table->forks[n_rfork];
 	if (DEBUG)
-		philo_id(write_mut, philo);
-	if (pthread_create(philo->philo_thread, NULL, routine, philo))
+		philo_id(table, philo);
+	if (pthread_create(&philo->philo_thread, NULL, routine, philo))
 		return (1);
 	return (0);
 }
 
-int	init_philos(t_table *table, int n_philos, pthread_mutex_t *write_mut)
+int	init_philos(t_table *table, size_t n_philos)
 {
-	ssize_t	i;
+	size_t	i;
 
-	i = -1;
-	while (++i < n_philos)
-		if (init_philo(table, write_mut, i + 1))
-			return (1);
+	i = 0;
+	while (i < n_philos)
+	{
+		if (init_philo(table, i + 1))
+		{
+			table->n_philos = i;
+			ft_putstr_fd("warning : couldnt create philo.\n", 2);
+			return (0);
+		}
+		++i;
+	}
+	return (0);
+}
+
+int	destroy_forks(t_fork *forks, int i)
+{
+	while (--i > 0)
+	{
+		pthread_mutex_destroy(&forks[i].fork_mutex);
+	}
+	free(forks);
 	return (0);
 }
 
@@ -61,30 +72,76 @@ int	init_forks(t_table *table, int n_philo)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	table->forks = ft_calloc(n_philo, sizeof(t_fork));
 	if (!table->forks)
-		return (-1);
-	while (i < n_philo)
 	{
-		table->forks[i].fork_mutex = ft_calloc(1, sizeof(pthread_mutex_t));
-		pthread_mutex_init(table->forks[i].fork_mutex, NULL);
-		++i;
+		free(table->philos);
+		return (1);
+	}
+	while (++i < n_philo)
+	{
+		if (pthread_mutex_init(&(table->forks[i].fork_mutex), NULL))
+		{
+			destroy_forks(table->forks, i);
+			return (1);
+		}
 	}
 	return (0);
 }
-void	init_table(t_table *table, int n_philo, pthread_mutex_t *write_mutex)
+
+int	init_mutexes(t_table *table)
 {
-	table->start = ft_calloc(1, sizeof(pthread_mutex_t));
-	table->tz = ft_calloc(1, sizeof(t_timezone));
-	table->start_time = ft_calloc(1, sizeof(t_timeval));
-	gettimeofday(table->start_time, table->tz);
-	pthread_mutex_init(table->start, NULL);
-	pthread_mutex_lock(table->start);
-	table->forks = ft_calloc(n_philo, sizeof(t_fork));
-	table->philos = ft_calloc(n_philo, sizeof(t_philo));
-	table->n_philos = n_philo;
-	init_forks(table, n_philo);
-	init_philos(table, n_philo, write_mutex);
-	pthread_mutex_unlock(table->start);
+	if (!pthread_mutex_init(&table->start, NULL))
+	{
+		if (!pthread_mutex_init(&table->meal_count_mutex, NULL))
+		{
+			if (!pthread_mutex_init(&table->death, NULL))
+			{
+				if (!pthread_mutex_init(&table->time_mut, NULL))
+					return (0);
+				pthread_mutex_destroy(&table->death);
+			}
+			pthread_mutex_destroy(&table->meal_count_mutex);
+		}
+		pthread_mutex_destroy(&table->start);
+	}
+	return (0);
+}
+
+int	destroy_mutexes(t_table *table)
+{
+	pthread_mutex_destroy(&table->death);
+	pthread_mutex_destroy(&table->meal_count_mutex);
+	pthread_mutex_destroy(&table->start);
+	pthread_mutex_destroy(&table->time_mut);
+	return (0);
+}
+
+int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
+{
+	if (parse_args(table, ac, av))
+		return (1);
+	table->weird_smell = 0;
+	gettimeofday(&table->start_time, &table->tz);
+	table->write = *write;
+	if (init_mutexes(table))
+		return (1);
+	pthread_mutex_lock(&table->start);
+	table->n_fed_philos = 0;
+	table->philos = ft_calloc(table->args[N_PHILO], sizeof(t_philo));
+	if (init_forks(table, table->args[N_PHILO]))
+		return (destroy_mutexes(table) + 1);
+	table->n_philos = table->args[N_PHILO];
+	if (!table->forks || !table->philos)
+		return (destroy_mutexes(table) + 1);
+	if (init_philos(table, table->args[N_PHILO]))
+	{
+		destroy_forks(table->forks, table->args[N_PHILO]);
+		return (destroy_mutexes(table) + 1);
+	}
+	if (DEBUG)
+		table_id(table);
+	pthread_mutex_unlock(&table->start);
+	return (0);
 }

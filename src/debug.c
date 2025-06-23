@@ -12,14 +12,38 @@
 
 #include "philosophers.h"
 
-void	philo_id(pthread_mutex_t *write_mutex, t_philo *philo)
+void	table_id(t_table *table)
 {
-	pthread_mutex_lock(write_mutex);
+	ssize_t	i;
+
+	i = -1;
+	pthread_mutex_lock(&table->write);
+	ft_printf("\n\n\n");
+	ft_printf("\nTABLE\n");
+	ft_printf("%d philosophers\n", table->args[N_PHILO]);
+	ft_printf("time to die : %d\n", table->args[T_DIE]);
+	ft_printf("time to eat: %d\n", table->args[T_EAT]);
+	ft_printf("time to sleep: %d\n", table->args[T_SLEEP]);
+	ft_printf("number of meals: %d\n", table->args[MEAL_OBJ]);
+	ft_printf("weird smell : %p (%d):\n", &table->weird_smell, table->weird_smell);
+	ft_printf("forks:\n");
+	while (++i < table->n_philos)
+		ft_printf("%p\n", &table->forks[i]);
+	i = -1;
+	ft_printf("\n\nphilosophers:\n");
+	while (++i < table->n_philos)
+		ft_printf("%p\n", &table->philos[i]);
+	ft_printf("\n\n\n");
+	pthread_mutex_unlock(&table->write);
+	// sleep(5);
+}
+void	philo_id(t_table *table, t_philo *philo)
+{
+	pthread_mutex_lock(&table->write);
 	ft_printf("\n\n\n");
 	ft_printf("philo n. %d\n", philo->index);
-	ft_printf("write mutex : %p\n", philo->write_mutex);
-	ft_printf("start mutex : %p\n", philo->start_mutex);
+	ft_printf("dead: %p\n", philo->dead);
 	ft_printf("forks : %p, %p\n", philo->forks[0], philo->forks[1]);
 	ft_printf("\n\n\n");
-	pthread_mutex_unlock(write_mutex);
+	pthread_mutex_unlock(&table->write);
 }
