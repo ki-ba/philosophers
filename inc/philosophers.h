@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/20 13:15:07 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:31:54 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,15 +99,18 @@ int		ft_isdigit(int c);
 
 /* ==== ACTIONS.C ==== */
 
-int		take_fork(t_table *table, size_t index, t_fork *fork);
-int		drop_fork(t_fork *fork);
-int		take_forks(t_table *table, t_philo *philo);
 void	philo_log(t_table *table, t_philo *philo, char msg[]);
 int		philo_eat(t_table *table, t_philo *philo);
-int		check_death(t_table *table, t_philo *philo);
 int		philo_sleep(t_table *table, t_philo *philo);
 int		philo_think(t_table *table, t_philo *philo);
+
+/* ==== ACTION UTILS.C ==== */
+
+int		take_fork(t_table *table, size_t index, t_fork *fork);
+int		drop_fork(t_fork *fork);
+int		check_death(t_table *table, t_philo *philo);
 int		should_stop(t_table *table, t_philo *philo);
+int		take_forks(t_table *table, t_philo *philo);
 
 /* ==== DEBUG.C ==== */
 
@@ -120,6 +123,11 @@ int		init_philo(t_table *table, size_t index);
 int		init_philos(t_table *table, size_t n_philos);
 int		init_forks(t_table *table, int n_philo);
 int		init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write);
+
+/* ==== DESTROY.C ==== */
+
+int		destroy_forks(t_fork *forks, int i);
+int		destroy_mutexes(t_table *table);
 
 /* ===== MAIN.C ==== */
 

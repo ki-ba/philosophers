@@ -6,12 +6,11 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:05:56 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/20 13:13:30 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:33:47 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <pthread.h>
 
 int	usage(void)
 {
@@ -27,16 +26,11 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	table = philo->table;
-	// table = ((t_table_th *)arg)->table;
-	// philo = &table->philos[((t_table_th *)arg)->index - 1];
 	gettimeofday(&time, &table->tz);
 	pthread_mutex_lock(&table->start);
 	pthread_mutex_unlock(&table->start);
 	if (philo->index % 2)
-	{
-		philo_log(table, philo, "is thinking\n");
-		smart_usleep(table, philo, table->args[T_EAT] / 2);
-	}
+		philo_think(table, philo);
 	while (1)
 	{
 		gettimeofday(&time, &table->tz);

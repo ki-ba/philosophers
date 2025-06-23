@@ -6,11 +6,10 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:49:20 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/20 13:16:04 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:34:15 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "philosophers.h"
 
 int	parse_args(t_table *table, int argc, char **argv)

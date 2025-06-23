@@ -6,13 +6,11 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/20 13:13:57 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:28:38 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "philosophers.h"
-#include <pthread.h>
 
 int	init_philo(t_table *table, size_t index)
 {
@@ -58,16 +56,6 @@ int	init_philos(t_table *table, size_t n_philos)
 	return (0);
 }
 
-int	destroy_forks(t_fork *forks, int i)
-{
-	while (--i > 0)
-	{
-		pthread_mutex_destroy(&forks[i].fork_mutex);
-	}
-	free(forks);
-	return (0);
-}
-
 int	init_forks(t_table *table, int n_philo)
 {
 	int	i;
@@ -106,15 +94,6 @@ int	init_mutexes(t_table *table)
 		}
 		pthread_mutex_destroy(&table->start);
 	}
-	return (0);
-}
-
-int	destroy_mutexes(t_table *table)
-{
-	pthread_mutex_destroy(&table->death);
-	pthread_mutex_destroy(&table->meal_count_mutex);
-	pthread_mutex_destroy(&table->start);
-	pthread_mutex_destroy(&table->time_mut);
 	return (0);
 }
 

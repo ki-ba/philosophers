@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:05 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/16 13:03:01 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:27:15 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	table_id(t_table *table)
 	ft_printf("time to eat: %d\n", table->args[T_EAT]);
 	ft_printf("time to sleep: %d\n", table->args[T_SLEEP]);
 	ft_printf("number of meals: %d\n", table->args[MEAL_OBJ]);
-	ft_printf("weird smell : %p (%d):\n", &table->weird_smell, table->weird_smell);
+	ft_printf("smell : %p (%d):\n", &table->weird_smell, table->weird_smell);
 	ft_printf("forks:\n");
 	while (++i < table->n_philos)
 		ft_printf("%p\n", &table->forks[i]);
@@ -35,7 +35,6 @@ void	table_id(t_table *table)
 		ft_printf("%p\n", &table->philos[i]);
 	ft_printf("\n\n\n");
 	pthread_mutex_unlock(&table->write);
-	// sleep(5);
 }
 void	philo_id(t_table *table, t_philo *philo)
 {
