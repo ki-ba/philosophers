@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:26:13 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:26:57 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:37:40 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philosophers.h"
@@ -26,8 +26,6 @@ int	take_fork(t_table *table, size_t index, t_fork *fork)
 	}
 	else
 	{
-		if (DEBUG)
-			philo_log(table, philo, "could not take fork\n");
 		pthread_mutex_unlock(&(fork->fork_mutex));
 		return (1);
 	}
@@ -68,12 +66,6 @@ int	check_death(t_table *table, t_philo *philo)
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);
 		philo_log(table, philo, "died\n");
-		if (DEBUG)
-		{
-			pthread_mutex_lock(&table->write);
-			ft_printf("last meal : %d\n", philo->last_meal);
-			pthread_mutex_unlock(&table->write);
-		}
 		return (1);
 	}
 	pthread_mutex_unlock(&table->death);

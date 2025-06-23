@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:28:38 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 14:37:01 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ int	init_philo(t_table *table, size_t index)
 	n_rfork = index - 1;
 	philo->forks[0] = &table->forks[n_lfork];
 	philo->forks[1] = &table->forks[n_rfork];
-	if (DEBUG)
-		philo_id(table, philo);
 	if (pthread_create(&philo->philo_thread, NULL, routine, philo))
 		return (1);
 	return (0);
@@ -119,8 +117,6 @@ int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 		destroy_forks(table->forks, table->args[N_PHILO]);
 		return (destroy_mutexes(table) + 1);
 	}
-	if (DEBUG)
-		table_id(table);
 	pthread_mutex_unlock(&table->start);
 	return (0);
 }
