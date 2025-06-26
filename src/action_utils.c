@@ -54,8 +54,8 @@ int	check_death(t_table *table, t_philo *philo)
 {
 	int	cur_ms_time;
 
-	cur_ms_time = cur_ms(table->start_time, &table->tz);
 	pthread_mutex_lock(&table->death);
+	cur_ms_time = cur_ms(table->start_time, &table->tz);
 	if (table->weird_smell)
 	{
 		pthread_mutex_unlock(&table->death);
@@ -65,7 +65,7 @@ int	check_death(t_table *table, t_philo *philo)
 	{
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);
-		philo_log(table, philo, "died\n");
+		philo_die(table, philo);
 		return (1);
 	}
 	pthread_mutex_unlock(&table->death);
@@ -80,12 +80,12 @@ int	should_stop(t_table *table, t_philo *philo)
 	if (table->args[MEAL_OBJ] > 0)
 	{
 		pthread_mutex_lock(&table->meal_count_mutex);
-		if (table->args[MEAL_OBJ] != 0)
+		if (table->n_fed_philos == table->n_philos)
 		{
-			if (table->n_fed_philos == table->n_philos)
-				yummy_stop = TRUE;
-			pthread_mutex_unlock(&table->meal_count_mutex);
+			yummy_stop = TRUE;
+			philo_log(table, philo, "is fed\n");
 		}
+		pthread_mutex_unlock(&table->meal_count_mutex);
 	}
 	return (yummy_stop || check_death(table, philo));
 }

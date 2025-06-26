@@ -11,17 +11,34 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <stdio.h>
 
 void	philo_log(t_table *table, t_philo *philo, char msg[])
 {
 	int	time_ms;
 
-	time_ms = cur_ms(table->start_time, &table->tz);
 	pthread_mutex_lock(&table->write);
-	ft_printf("%d	", time_ms);
-	ft_printf("%d ", philo->index);
-	ft_printf("%s", msg);
+	if (check_death(table, philo))
+	{
+		pthread_mutex_unlock(&table->write);
+		return ;
+	}
+	time_ms = cur_ms(table->start_time, &table->tz);
+	ft_printf("%d	%d %s", time_ms, philo->index, msg);
+	// ft_printf("%d ", philo->index);
+	// ft_printf("%s", msg);
 	pthread_mutex_unlock(&table->write);
+}
+
+int	philo_die(t_table *table, t_philo *philo)
+{
+	int	time_ms;
+
+	pthread_mutex_lock(&table->write);
+	time_ms = cur_ms(table->start_time, &table->tz);
+	ft_printf("%d	%d %s", time_ms, philo->index, "died\n");
+	pthread_mutex_unlock(&table->write);
+	return (0);
 }
 
 int	philo_eat(t_table *table, t_philo *philo)
@@ -37,7 +54,7 @@ int	philo_eat(t_table *table, t_philo *philo)
 	smart_usleep(table, philo, table->args[T_EAT]);
 	drop_fork(philo->forks[0]);
 	drop_fork(philo->forks[1]);
-	return (table->weird_smell);
+	return (check_death(table, philo));
 }
 
 int	philo_sleep(t_table *table, t_philo *philo)

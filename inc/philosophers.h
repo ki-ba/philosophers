@@ -103,6 +103,7 @@ void	philo_log(t_table *table, t_philo *philo, char msg[]);
 int		philo_eat(t_table *table, t_philo *philo);
 int		philo_sleep(t_table *table, t_philo *philo);
 int		philo_think(t_table *table, t_philo *philo);
+int		philo_die(t_table *table, t_philo *philo);
 
 /* ==== ACTION UTILS.C ==== */
 
