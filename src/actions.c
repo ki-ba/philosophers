@@ -25,8 +25,6 @@ void	philo_log(t_table *table, t_philo *philo, char msg[])
 	}
 	time_ms = cur_ms(table->start_time, &table->tz);
 	ft_printf("%d	%d %s", time_ms, philo->index, msg);
-	// ft_printf("%d ", philo->index);
-	// ft_printf("%s", msg);
 	pthread_mutex_unlock(&table->write);
 }
 

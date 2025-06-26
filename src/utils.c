@@ -52,7 +52,6 @@ int	increment_meals(t_table *table, t_philo *philo)
 {
 	if (++(philo->n_meals) == table->args[MEAL_OBJ])
 	{
-		// philo_log(table, philo, "has eaten enough\n");
 		pthread_mutex_lock(&table->meal_count_mutex);
 		++(table->n_fed_philos);
 		pthread_mutex_unlock(&table->meal_count_mutex);
