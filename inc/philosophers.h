@@ -69,13 +69,11 @@ typedef struct s_table
 {
 	t_fork			*forks;
 	int				weird_smell;
-	int				time_ms;
 	ssize_t			n_fed_philos;
 	ssize_t			n_philos;
 	t_philo			*philos;
 	ssize_t			args[5];
 	t_timeval		start_time;
-	t_timeval		time;
 	t_timezone		tz;
 	pthread_mutex_t	time_mut;
 	pthread_mutex_t	meal_count_mutex;
@@ -135,6 +133,7 @@ int		destroy_mutexes(t_table *table);
 void	*routine(void *arg);
 int		join_philos(t_table *table);
 int		main(int argc, char *argv[]);
+int		silent_check_death(t_table *table);
 
 /* ==== UTILS.C ==== */
 

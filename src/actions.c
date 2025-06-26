@@ -19,6 +19,11 @@ void	philo_log(t_table *table, t_philo *philo, char msg[])
 	if (check_death(table, philo))
 		return ;
 	pthread_mutex_lock(&table->write);
+	if (silent_check_death(table))
+	{
+		pthread_mutex_unlock(&table->write);
+		return ;
+	}
 	time_ms = cur_ms(table->start_time, &table->tz);
 	ft_printf("%d	%d %s", time_ms, philo->index, msg);
 	pthread_mutex_unlock(&table->write);

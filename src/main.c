@@ -46,6 +46,16 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
+int	silent_check_death(t_table *table)
+{
+	int	ret;
+
+	pthread_mutex_lock(&table->death);
+	ret = table->weird_smell;
+	pthread_mutex_unlock(&table->death);
+	return (ret);
+}
+
 int	join_philos(t_table *table)
 {
 	ssize_t	i;

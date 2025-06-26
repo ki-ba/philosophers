@@ -94,8 +94,6 @@ int	take_forks(t_table *table, t_philo *philo)
 
 	left_fork = philo->forks[0];
 	right_fork = philo->forks[1];
-	// if (should_stop(table, philo))
-	// 	return (1);
 	if (philo->index % 2)
 	{
 		while (take_fork(table, philo->index, left_fork))
