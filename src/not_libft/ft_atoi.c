@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <limits.h>
 
 ssize_t	ft_atoi(const char *nptr)
 {
