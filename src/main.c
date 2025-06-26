@@ -31,7 +31,7 @@ void	*routine(void *arg)
 	pthread_mutex_unlock(&table->start);
 	if (philo->index % 2)
 		philo_think(table, philo);
-	while (1)
+	while (!should_stop(table, philo))
 	{
 		gettimeofday(&time, &table->tz);
 		if (check_death(table, philo))

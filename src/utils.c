@@ -39,7 +39,7 @@ int	smart_usleep(t_table *table, t_philo *philo, int time_ms)
 	sleep_time = 0;
 	gettimeofday(&time, &table->tz);
 	initial_us = time.tv_sec * 1000000 + time.tv_usec;
-	while (!should_stop(table, philo) && sleep_time < time_ms * 1000)
+	while (!check_death(table, philo) && sleep_time < time_ms * 1000)
 	{
 		gettimeofday(&time, &table->tz);
 		sleep_time = time_to_us(&time) - initial_us;
@@ -52,7 +52,7 @@ int	increment_meals(t_table *table, t_philo *philo)
 {
 	if (++(philo->n_meals) == table->args[MEAL_OBJ])
 	{
-		philo_log(table, philo, "has eaten enough\n");
+		// philo_log(table, philo, "has eaten enough\n");
 		pthread_mutex_lock(&table->meal_count_mutex);
 		++(table->n_fed_philos);
 		pthread_mutex_unlock(&table->meal_count_mutex);

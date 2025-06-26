@@ -83,7 +83,7 @@ int	should_stop(t_table *table, t_philo *philo)
 		if (table->n_fed_philos == table->n_philos)
 		{
 			yummy_stop = TRUE;
-			philo_log(table, philo, "is fed\n");
+			// philo_log(table, philo, "is fed\n");
 		}
 		pthread_mutex_unlock(&table->meal_count_mutex);
 	}
