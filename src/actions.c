@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <stdio.h>
 
 void	philo_log(t_table *table, t_philo *philo, char msg[])
 {
@@ -41,11 +40,7 @@ int	philo_die(t_table *table, t_philo *philo)
 
 int	philo_eat(t_table *table, t_philo *philo)
 {
-	while (take_forks(table, philo))
-	{
-		if (should_stop(table, philo))
-			return (1);
-	}
+	take_forks(table, philo);
 	philo->last_meal = cur_ms(table->start_time, &table->tz);
 	philo_log(table, philo, "is eating\n");
 	increment_meals(table, philo);

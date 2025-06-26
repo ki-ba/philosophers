@@ -98,17 +98,17 @@ int	take_forks(t_table *table, t_philo *philo)
 		return (1);
 	if (philo->index % 2)
 	{
-		if (take_fork(table, philo->index, left_fork))
-			return (10);
-		if (take_fork(table, philo->index, right_fork))
-			return (drop_fork(left_fork) + 10);
+		while (take_fork(table, philo->index, left_fork))
+			usleep(500);
+		while (take_fork(table, philo->index, right_fork))
+			usleep(500);
 	}
 	else
 	{
-		if (take_fork(table, philo->index, right_fork))
-			return (10);
-		if (take_fork(table, philo->index, left_fork))
-			return (drop_fork(right_fork) + 10);
+		while (take_fork(table, philo->index, right_fork))
+			usleep(500);
+		while (take_fork(table, philo->index, left_fork))
+			usleep(500);
 	}
 	return (0);
 }
