@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:59:47 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:26:51 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 16:24:28 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	philo_log(t_table *table, t_philo *philo, char msg[])
 {
 	int	time_ms;
 
-	time_ms = cur_ms(table->start_time, &table->time, &table->tz);
+	time_ms = cur_ms(table->start_time, &table->tz);
 	pthread_mutex_lock(&table->write);
 	ft_printf("%d	", time_ms);
 	ft_printf("%d ", philo->index);
@@ -30,9 +30,8 @@ int	philo_eat(t_table *table, t_philo *philo)
 	{
 		if (should_stop(table, philo))
 			return (1);
-		smart_usleep(table, philo, 5);
 	}
-	philo->last_meal = cur_ms(table->start_time, &table->time, &table->tz);
+	philo->last_meal = cur_ms(table->start_time, &table->tz);
 	philo_log(table, philo, "is eating\n");
 	increment_meals(table, philo);
 	smart_usleep(table, philo, table->args[T_EAT]);
@@ -50,5 +49,5 @@ int	philo_sleep(t_table *table, t_philo *philo)
 int	philo_think(t_table *table, t_philo *philo)
 {
 	philo_log(table, philo, "is thinking\n");
-	return (smart_usleep(table, philo, 20));
+	return (smart_usleep(table, philo, 1));
 }

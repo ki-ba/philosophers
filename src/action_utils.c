@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:26:13 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:37:40 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 16:23:49 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philosophers.h"
@@ -54,7 +54,7 @@ int	check_death(t_table *table, t_philo *philo)
 {
 	int	cur_ms_time;
 
-	cur_ms_time = cur_ms(table->start_time, &table->time, &table->tz);
+	cur_ms_time = cur_ms(table->start_time, &table->tz);
 	pthread_mutex_lock(&table->death);
 	if (table->weird_smell)
 	{
@@ -83,9 +83,7 @@ int	should_stop(t_table *table, t_philo *philo)
 		if (table->args[MEAL_OBJ] != 0)
 		{
 			if (table->n_fed_philos == table->n_philos)
-			{
 				yummy_stop = TRUE;
-			}
 			pthread_mutex_unlock(&table->meal_count_mutex);
 		}
 	}

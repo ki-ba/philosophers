@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:31:54 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/23 16:24:03 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 # endif
 
 # ifndef USLEEP_STEP
-#  define USLEEP_STEP 1000 
+#  define USLEEP_STEP 1000
 # endif
 
 # define TRUE 1
@@ -138,7 +138,7 @@ int		main(int argc, char *argv[]);
 /* ==== UTILS.C ==== */
 
 int		time_to_ms(t_timeval *time);
-int		cur_ms(t_timeval start_time, t_timeval *time, t_timezone *tz);
+int		cur_ms(t_timeval start_time, t_timezone *tz);
 int		smart_usleep(t_table *table, t_philo *philo, int time_ms);
 int		increment_meals(t_table *table, t_philo *philo);
 
