@@ -1,5 +1,5 @@
 NAME = philo
-FLAGS = -Wall -Wextra -g
+FLAGS = -Wall -Wextra -Werror -g
 SANITIZE_FLAGS = -Wall -Wextra -g -fsanitize=thread
 DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
