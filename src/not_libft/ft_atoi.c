@@ -22,7 +22,9 @@ ssize_t	ft_atoi(const char *nptr)
 	{
 		if (!ft_isdigit(*nptr))
 			return (-1);
-		else if (n > INT_MAX / 10 || (n == INT_MAX / 10 && *nptr >= 7))
+		else if (n > INT_MAX / 10 || (n == INT_MAX / 10 && *nptr > '7'))
+			return (-1);
+		else if (n < INT_MIN / 10 || (n == INT_MIN / 10 && *nptr > '8'))
 			return (-1);
 		n = (n * 10) + (*nptr - 48);
 		++nptr;

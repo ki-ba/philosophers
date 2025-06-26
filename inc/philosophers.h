@@ -16,6 +16,7 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <sys/time.h>
+# include <limits.h>
 # include "ft_printf.h"
 
 /* time to eat in ms*/
