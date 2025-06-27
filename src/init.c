@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 14:37:01 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/06/27 10:07:07 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	init_mutexes(t_table *table)
 		}
 		pthread_mutex_destroy(&table->start);
 	}
-	return (0);
+	return (1);
 }
 
 int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
