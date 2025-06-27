@@ -38,7 +38,7 @@ int	smart_usleep(t_table *table, t_philo *philo, int time_ms)
 
 	sleep_time = 0;
 	gettimeofday(&time, &table->tz);
-	initial_us = time.tv_sec * 1000000 + time.tv_usec;
+	initial_us = time_to_us(&time);
 	while (!check_death(table, philo) && sleep_time < time_ms * 1000)
 	{
 		gettimeofday(&time, &table->tz);

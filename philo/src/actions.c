@@ -19,13 +19,13 @@ void	philo_log(t_table *table, t_philo *philo, char msg[])
 	if (check_death(table, philo))
 		return ;
 	pthread_mutex_lock(&table->write);
+	time_ms = cur_ms(table->start_time, &table->tz);
 	if (silent_check_death(table))
 	{
 		pthread_mutex_unlock(&table->write);
 		return ;
 	}
-	time_ms = cur_ms(table->start_time, &table->tz);
-	ft_printf("%d	%d %s", time_ms, philo->index, msg);
+	printf("%d	%zu %s", time_ms, philo->index, msg);
 	pthread_mutex_unlock(&table->write);
 }
 
@@ -35,7 +35,7 @@ int	philo_die(t_table *table, t_philo *philo)
 
 	pthread_mutex_lock(&table->write);
 	time_ms = cur_ms(table->start_time, &table->tz);
-	ft_printf("%d	%d %s", time_ms, philo->index, "died\n");
+	printf("%d	%zu %s", time_ms, philo->index, "died\n");
 	pthread_mutex_unlock(&table->write);
 	return (0);
 }
@@ -44,9 +44,9 @@ int	philo_eat(t_table *table, t_philo *philo)
 {
 	if (take_forks(table, philo))
 		return (1);
-	philo->last_meal = cur_ms(table->start_time, &table->tz);
 	philo_log(table, philo, "is eating\n");
 	increment_meals(table, philo);
+	philo->last_meal = cur_ms(table->start_time, &table->tz);
 	smart_usleep(table, philo, table->args[T_EAT]);
 	drop_fork(philo->forks[0]);
 	drop_fork(philo->forks[1]);
@@ -62,5 +62,5 @@ int	philo_sleep(t_table *table, t_philo *philo)
 int	philo_think(t_table *table, t_philo *philo)
 {
 	philo_log(table, philo, "is thinking\n");
-	return (smart_usleep(table, philo, 1));
+	return (0);
 }

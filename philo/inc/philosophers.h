@@ -17,27 +17,21 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <limits.h>
+# include <stdio.h>
 # include "ft_printf.h"
-
-/* time to eat in ms*/
-# define TIME_TO_EAT 500
-
-/* time to die in ms */
-# define TIME_TO_DIE 2000
-
-/* time to sleep in ms */
-# define TIME_TO_SLEEP 500
 
 # ifndef DEBUG
 #  define DEBUG 0
 # endif
 
 # ifndef USLEEP_STEP
-#  define USLEEP_STEP 1000
+#  define USLEEP_STEP 500
 # endif
 
 # define TRUE 1
 # define FALSE 0
+
+/* ==== ARGS ARRAY INDEXES ==== */
 
 # define N_PHILO 0
 # define T_DIE 1
@@ -59,7 +53,7 @@ typedef struct s_philo
 {
 	t_fork			*forks[2];
 	int				*dead;
-	size_t			index;
+	ssize_t			index;
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
 	int				last_meal;
@@ -76,7 +70,6 @@ typedef struct s_table
 	ssize_t			args[5];
 	t_timeval		start_time;
 	t_timezone		tz;
-	pthread_mutex_t	time_mut;
 	pthread_mutex_t	meal_count_mutex;
 	pthread_mutex_t	start;
 	pthread_mutex_t	write;

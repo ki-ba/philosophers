@@ -16,12 +16,11 @@ int	take_fork(t_table *table, size_t index, t_fork *fork)
 	t_philo		*philo;
 
 	philo = &table->philos[index - 1];
-	if (should_stop(table, philo))
-		return (1);
 	pthread_mutex_lock(&(fork->fork_mutex));
 	if (fork->in_use == 0)
 	{
 		fork->in_use = 1;
+		pthread_mutex_unlock(&(fork->fork_mutex));
 		philo_log(table, philo, "has taken a fork\n");
 	}
 	else
@@ -29,7 +28,6 @@ int	take_fork(t_table *table, size_t index, t_fork *fork)
 		pthread_mutex_unlock(&(fork->fork_mutex));
 		return (1);
 	}
-	pthread_mutex_unlock(&(fork->fork_mutex));
 	return (0);
 }
 
@@ -39,29 +37,26 @@ int	drop_fork(t_fork *fork)
 	if (fork->in_use == 1)
 	{
 		fork->in_use = 0;
+		pthread_mutex_unlock(&(fork->fork_mutex));
 	}
 	else
 	{
-		ft_putstr_fd("ERROR : fork not in use, yet dropped\n", 2);
 		pthread_mutex_unlock(&(fork->fork_mutex));
+		ft_putstr_fd("ERROR : fork not in use, yet dropped\n", 2);
 		return (1);
 	}
-	pthread_mutex_unlock(&(fork->fork_mutex));
 	return (0);
 }
 
 int	check_death(t_table *table, t_philo *philo)
 {
-	int	cur_ms_time;
-
 	pthread_mutex_lock(&table->death);
-	cur_ms_time = cur_ms(table->start_time, &table->tz);
 	if (table->weird_smell)
 	{
 		pthread_mutex_unlock(&table->death);
 		return (1);
 	}
-	else if (cur_ms_time - philo->last_meal >= table->args[T_DIE])
+	else if (cur_ms(table->start_time, &table->tz) - philo->last_meal >= table->args[T_DIE])
 	{
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);
@@ -97,19 +92,19 @@ int	take_forks(t_table *table, t_philo *philo)
 	if (philo->index % 2)
 	{
 		while (take_fork(table, philo->index, left_fork))
-			if (smart_usleep(table, philo, 0))
+			if (check_death(table, philo))
 				return (1);
 		while (take_fork(table, philo->index, right_fork))
-			if (smart_usleep(table, philo, 0))
+			if (check_death(table, philo))
 				return (1);
 	}
 	else
 	{
 		while (take_fork(table, philo->index, right_fork))
-			if (smart_usleep(table, philo, 0))
+			if (check_death(table, philo))
 				return (1);
 		while (take_fork(table, philo->index, left_fork))
-			if (smart_usleep(table, philo, 0))
+			if (check_death(table, philo))
 				return (1);
 	}
 	return (0);

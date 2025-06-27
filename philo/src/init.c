@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <sys/time.h>
 
 int	init_philo(t_table *table, size_t index)
 {
@@ -51,6 +52,8 @@ int	init_philos(t_table *table, size_t n_philos)
 		}
 		++i;
 	}
+	gettimeofday(&table->start_time, &table->tz);
+	pthread_mutex_unlock(&table->start);
 	return (0);
 }
 
@@ -83,11 +86,8 @@ int	init_mutexes(t_table *table)
 		if (!pthread_mutex_init(&table->meal_count_mutex, NULL))
 		{
 			if (!pthread_mutex_init(&table->death, NULL))
-			{
-				if (!pthread_mutex_init(&table->time_mut, NULL))
-					return (0);
-				pthread_mutex_destroy(&table->death);
-			}
+				return (0);
+			pthread_mutex_destroy(&table->death);
 			pthread_mutex_destroy(&table->meal_count_mutex);
 		}
 		pthread_mutex_destroy(&table->start);
@@ -97,10 +97,12 @@ int	init_mutexes(t_table *table)
 
 int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 {
+	t_timeval	time;
+
+	gettimeofday(&time, &table->tz);
 	if (parse_args(table, ac, av))
 		return (1);
 	table->weird_smell = 0;
-	gettimeofday(&table->start_time, &table->tz);
 	table->write = *write;
 	if (init_mutexes(table))
 		return (1);
@@ -117,6 +119,5 @@ int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 		destroy_forks(table->forks, table->args[N_PHILO]);
 		return (destroy_mutexes(table) + 1);
 	}
-	pthread_mutex_unlock(&table->start);
 	return (0);
 }

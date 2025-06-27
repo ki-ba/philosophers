@@ -26,22 +26,18 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	table = philo->table;
-	gettimeofday(&time, &table->tz);
 	pthread_mutex_lock(&table->start);
 	pthread_mutex_unlock(&table->start);
 	if (philo->index % 2)
-		philo_think(table, philo);
+		usleep(10);
 	while (!should_stop(table, philo))
 	{
 		gettimeofday(&time, &table->tz);
-		if (check_death(table, philo))
-			return (NULL);
 		if (philo_eat(table, philo))
 			return (NULL);
 		if (philo_sleep(table, philo))
 			return (NULL);
-		if (philo_think(table, philo))
-			return (NULL);
+		(philo_think(table, philo));
 	}
 	return (NULL);
 }
@@ -87,7 +83,6 @@ int	main(int argc, char *argv[])
 	if (join_philos(&table))
 		return (1);
 	pthread_mutex_destroy(&write_mut);
-	pthread_mutex_destroy(&table.time_mut);
 	pthread_mutex_destroy(&table.start);
 	pthread_mutex_destroy(&table.death);
 	pthread_mutex_destroy(&table.meal_count_mutex);

@@ -21,12 +21,3 @@ int	destroy_forks(t_fork *forks, int i)
 	free(forks);
 	return (0);
 }
-
-int	destroy_mutexes(t_table *table)
-{
-	pthread_mutex_destroy(&table->death);
-	pthread_mutex_destroy(&table->meal_count_mutex);
-	pthread_mutex_destroy(&table->start);
-	pthread_mutex_destroy(&table->time_mut);
-	return (0);
-}

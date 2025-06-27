@@ -1,6 +1,6 @@
 .obj/
 .cache/
-philo
+philo/philo
 *.json
 log
 readline.sup
