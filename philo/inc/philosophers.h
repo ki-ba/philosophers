@@ -25,7 +25,7 @@
 # endif
 
 # ifndef USLEEP_STEP
-#  define USLEEP_STEP 500
+#  define USLEEP_STEP 200
 # endif
 
 # define TRUE 1
@@ -56,13 +56,14 @@ typedef struct s_philo
 	ssize_t			index;
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
-	int				last_meal;
+	t_timeval		last_meal;
 	t_table			*table;
 }					t_philo;
 
 typedef struct s_table
 {
 	t_fork			*forks;
+	int				start;
 	int				weird_smell;
 	ssize_t			n_fed_philos;
 	ssize_t			n_philos;
@@ -71,7 +72,7 @@ typedef struct s_table
 	t_timeval		start_time;
 	t_timezone		tz;
 	pthread_mutex_t	meal_count_mutex;
-	pthread_mutex_t	start;
+	pthread_mutex_t	start_mut;
 	pthread_mutex_t	write;
 	pthread_mutex_t	death;
 }					t_table;
@@ -128,13 +129,15 @@ void	*routine(void *arg);
 int		join_philos(t_table *table);
 int		main(int argc, char *argv[]);
 int		silent_check_death(t_table *table);
+void	print_timeval(t_timeval time);
 
 /* ==== UTILS.C ==== */
 
-int		time_to_ms(t_timeval *time);
-int		cur_ms(t_timeval start_time, t_timezone *tz);
+long	time_to_ms(t_timeval *time);
+long	cur_ms(t_timeval start_time, t_timezone *tz);
 int		smart_usleep(t_table *table, t_philo *philo, int time_ms);
 int		increment_meals(t_table *table, t_philo *philo);
+int		compare_times(t_table *table, t_timeval time, int us);
 
 /* ==== PARSING.C ==== */
 

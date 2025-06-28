@@ -12,17 +12,28 @@
 
 #include "philosophers.h"
 
-int	time_to_ms(t_timeval *time)
+long	time_to_ms(t_timeval *time)
 {
 	return (time->tv_sec * 1000 + time->tv_usec / 1000);
 }
 
-int	time_to_us(t_timeval *time)
+int	compare_times(t_table *table, t_timeval time, int ms)
 {
-	return (time->tv_sec * 1000000 + time->tv_usec);
+	t_timeval	t2;
+	t_timeval	now;
+
+	gettimeofday(&now, &table->tz);
+	t2.tv_sec = time.tv_sec;
+	t2.tv_usec = time.tv_usec + ms * 1000 ;
+	while (t2.tv_usec >= 1000000)
+	{
+		t2.tv_usec -= 1000000;
+		t2.tv_sec += 1;
+	}
+	return ((now.tv_sec - t2.tv_sec) * 1000000 + now.tv_usec - t2.tv_usec);
 }
 
-int	cur_ms(t_timeval start_time, t_timezone *tz)
+long	cur_ms(t_timeval start_time, t_timezone *tz)
 {
 	t_timeval	ttime;
 
@@ -32,17 +43,14 @@ int	cur_ms(t_timeval start_time, t_timezone *tz)
 
 int	smart_usleep(t_table *table, t_philo *philo, int time_ms)
 {
-	int			sleep_time;
-	t_timeval	time;
-	int			initial_us;
+	t_timeval	initial_time;
 
-	sleep_time = 0;
-	gettimeofday(&time, &table->tz);
-	initial_us = time_to_us(&time);
-	while (!check_death(table, philo) && sleep_time < time_ms * 1000)
+	gettimeofday(&initial_time, &table->tz);
+	usleep(USLEEP_STEP);
+	while (compare_times(table, initial_time, time_ms) <= 0)
 	{
-		gettimeofday(&time, &table->tz);
-		sleep_time = time_to_us(&time) - initial_us;
+		if (check_death(table, philo))
+			return (1);
 		usleep(USLEEP_STEP);
 	}
 	return (should_stop(table, philo));

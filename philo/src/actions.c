@@ -14,10 +14,8 @@
 
 void	philo_log(t_table *table, t_philo *philo, char msg[])
 {
-	int	time_ms;
+	long	time_ms;
 
-	if (check_death(table, philo))
-		return ;
 	pthread_mutex_lock(&table->write);
 	time_ms = cur_ms(table->start_time, &table->tz);
 	if (silent_check_death(table))
@@ -25,7 +23,7 @@ void	philo_log(t_table *table, t_philo *philo, char msg[])
 		pthread_mutex_unlock(&table->write);
 		return ;
 	}
-	printf("%d	%zu %s", time_ms, philo->index, msg);
+	printf("%ld	%0.2zu %s", time_ms, philo->index, msg);
 	pthread_mutex_unlock(&table->write);
 }
 
@@ -46,7 +44,7 @@ int	philo_eat(t_table *table, t_philo *philo)
 		return (1);
 	philo_log(table, philo, "is eating\n");
 	increment_meals(table, philo);
-	philo->last_meal = cur_ms(table->start_time, &table->tz);
+	gettimeofday(&philo->last_meal, &table->tz);
 	smart_usleep(table, philo, table->args[T_EAT]);
 	drop_fork(philo->forks[0]);
 	drop_fork(philo->forks[1]);

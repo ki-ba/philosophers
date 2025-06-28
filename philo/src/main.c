@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <sys/time.h>
 
 int	usage(void)
 {
@@ -22,17 +23,16 @@ void	*routine(void *arg)
 {
 	t_philo		*philo;
 	t_table		*table;
-	t_timeval	time;
 
 	philo = (t_philo *)arg;
 	table = philo->table;
-	pthread_mutex_lock(&table->start);
-	pthread_mutex_unlock(&table->start);
+	gettimeofday(&philo->last_meal, NULL);
+	pthread_mutex_lock(&table->start_mut);
+	pthread_mutex_unlock(&table->start_mut);
 	if (philo->index % 2)
-		usleep(10);
+		philo_think(table, philo);
 	while (!should_stop(table, philo))
 	{
-		gettimeofday(&time, &table->tz);
 		if (philo_eat(table, philo))
 			return (NULL);
 		if (philo_sleep(table, philo))
@@ -83,7 +83,7 @@ int	main(int argc, char *argv[])
 	if (join_philos(&table))
 		return (1);
 	pthread_mutex_destroy(&write_mut);
-	pthread_mutex_destroy(&table.start);
+	pthread_mutex_destroy(&table.start_mut);
 	pthread_mutex_destroy(&table.death);
 	pthread_mutex_destroy(&table.meal_count_mutex);
 	return (0);

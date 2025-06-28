@@ -56,7 +56,7 @@ int	check_death(t_table *table, t_philo *philo)
 		pthread_mutex_unlock(&table->death);
 		return (1);
 	}
-	else if (cur_ms(table->start_time, &table->tz) - philo->last_meal >= table->args[T_DIE])
+	else if (compare_times(table, philo->last_meal, table->args[T_DIE]) > 0)
 	{
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);
@@ -92,19 +92,19 @@ int	take_forks(t_table *table, t_philo *philo)
 	if (philo->index % 2)
 	{
 		while (take_fork(table, philo->index, left_fork))
-			if (check_death(table, philo))
+			if (smart_usleep(table, philo, 0))
 				return (1);
 		while (take_fork(table, philo->index, right_fork))
-			if (check_death(table, philo))
+			if (smart_usleep(table, philo, 0))
 				return (1);
 	}
 	else
 	{
 		while (take_fork(table, philo->index, right_fork))
-			if (check_death(table, philo))
+			if (smart_usleep(table, philo, 0))
 				return (1);
 		while (take_fork(table, philo->index, left_fork))
-			if (check_death(table, philo))
+			if (smart_usleep(table, philo, 0))
 				return (1);
 	}
 	return (0);
