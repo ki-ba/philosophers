@@ -6,16 +6,15 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:05:56 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 16:26:24 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/01 11:29:01 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <sys/time.h>
 
 int	usage(void)
 {
-	ft_putstr_fd("usage : ./philo time_die time_eat time_sleep [n_meals]\n", 2);
+	write(2, "usage : ./philo time_die time_eat time_sleep [n_meals]\n", 56);
 	return (1);
 }
 
@@ -26,18 +25,19 @@ void	*routine(void *arg)
 
 	philo = (t_philo *)arg;
 	table = philo->table;
-	gettimeofday(&philo->last_meal, NULL);
 	pthread_mutex_lock(&table->start_mut);
 	pthread_mutex_unlock(&table->start_mut);
+	philo_think(table, philo);
 	if (philo->index % 2)
-		philo_think(table, philo);
+		usleep(100);
 	while (!should_stop(table, philo))
 	{
 		if (philo_eat(table, philo))
 			return (NULL);
 		if (philo_sleep(table, philo))
 			return (NULL);
-		(philo_think(table, philo));
+		if (philo_think(table, philo))
+			return (NULL);
 	}
 	return (NULL);
 }

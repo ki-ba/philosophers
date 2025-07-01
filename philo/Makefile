@@ -1,5 +1,5 @@
 NAME = philo
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = -Wall -Wextra -Werror -g -pg
 SANITIZE_FLAGS = -Wall -Wextra -g -fsanitize=thread
 DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
@@ -8,7 +8,7 @@ PRINTF_SRC = ft_printf.c  ft_is_in.c ft_put_ul_base.c ft_putchar.c ft_putchar_fd
 			 ft_strlen.c
 M_SRC = main.c init.c destroy.c actions.c action_utils.c utils.c parsing.c
 
-N_INC = philosophers.h ft_printf.h
+N_INC = philosophers.h
 
 P_NL = $(addprefix $(NOT_LIBFT_DIR), $(NL_SRC))
 P_PRINTF = $(addprefix $(NOT_PRINTF_DIR), $(PRINTF_SRC))
@@ -22,7 +22,7 @@ NOT_PRINTF_DIR = ft_printf/
 
 
 INC = $(addprefix $(INC_DIR), $(N_INC))
-SRC = $(P_NL) $(P_PRINTF) $(M_SRC)
+SRC = $(P_NL) $(M_SRC)
 OBJ = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
 .PHONY: all re clean fclean

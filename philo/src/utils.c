@@ -6,48 +6,57 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 11:07:04 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 16:23:44 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/01 11:36:32 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <pthread.h>
 
-long	time_to_ms(t_timeval *time)
+long	compare_times(t_table *table, t_timeval time)
 {
-	return (time->tv_sec * 1000 + time->tv_usec / 1000);
-}
-
-int	compare_times(t_table *table, t_timeval time, int ms)
-{
-	t_timeval	t2;
 	t_timeval	now;
 
 	gettimeofday(&now, &table->tz);
-	t2.tv_sec = time.tv_sec;
-	t2.tv_usec = time.tv_usec + ms * 1000 ;
-	while (t2.tv_usec >= 1000000)
-	{
-		t2.tv_usec -= 1000000;
-		t2.tv_sec += 1;
-	}
-	return ((now.tv_sec - t2.tv_sec) * 1000000 + now.tv_usec - t2.tv_usec);
+	return ((now.tv_sec - time.tv_sec) * 1000000 + now.tv_usec - time.tv_usec);
 }
 
-long	cur_ms(t_timeval start_time, t_timezone *tz)
+void	calculate_delta(t_timeval t1, t_timeval *t2, long delta_us)
 {
-	t_timeval	ttime;
-
-	gettimeofday(&ttime, tz);
-	return (time_to_ms(&ttime) - time_to_ms(&start_time));
+	t2->tv_sec = t1.tv_sec;
+	t2->tv_usec = t1.tv_usec + delta_us;
+	while (t2->tv_usec > 1000000)
+	{
+		++(t2->tv_sec);
+		t2->tv_usec -= 1000000;
+	}
 }
 
-int	smart_usleep(t_table *table, t_philo *philo, int time_ms)
+/*
+	* @brief compares `time` + `delta_us` with now.
+	* @returns 1 if now is more than `delta_us` us later than `time`.
+	* @returns 0 if `time` < `now` < `now` + `delta_us`
+*/
+int	compare_times_bool(t_table *table, t_timeval t1)
+{
+	t_timeval	now;
+
+	gettimeofday(&now, &table->tz);
+	if (now.tv_sec > t1.tv_sec)
+		return (1);
+	else if (now.tv_sec == t1.tv_sec && now.tv_usec >= t1.tv_usec)
+		return (1);
+	return (0);
+}
+
+int	smart_usleep(t_table *table, t_philo *philo, int time_us)
 {
 	t_timeval	initial_time;
+	t_timeval	t2;
 
 	gettimeofday(&initial_time, &table->tz);
-	usleep(USLEEP_STEP);
-	while (compare_times(table, initial_time, time_ms) <= 0)
+	calculate_delta(initial_time, &t2, time_us);
+	while (!compare_times_bool(table, t2))
 	{
 		if (check_death(table, philo))
 			return (1);

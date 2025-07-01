@@ -6,16 +6,14 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 14:26:13 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 16:23:49 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/01 11:36:24 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "philosophers.h"
 
-int	take_fork(t_table *table, size_t index, t_fork *fork)
+int	take_fork(t_table *table, t_philo *philo, t_fork *fork)
 {
-	t_philo		*philo;
-
-	philo = &table->philos[index - 1];
 	pthread_mutex_lock(&(fork->fork_mutex));
 	if (fork->in_use == 0)
 	{
@@ -42,7 +40,6 @@ int	drop_fork(t_fork *fork)
 	else
 	{
 		pthread_mutex_unlock(&(fork->fork_mutex));
-		ft_putstr_fd("ERROR : fork not in use, yet dropped\n", 2);
 		return (1);
 	}
 	return (0);
@@ -56,7 +53,7 @@ int	check_death(t_table *table, t_philo *philo)
 		pthread_mutex_unlock(&table->death);
 		return (1);
 	}
-	else if (compare_times(table, philo->last_meal, table->args[T_DIE]) > 0)
+	else if (compare_times_bool(table, philo->death_time))
 	{
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);
@@ -91,20 +88,20 @@ int	take_forks(t_table *table, t_philo *philo)
 	right_fork = philo->forks[1];
 	if (philo->index % 2)
 	{
-		while (take_fork(table, philo->index, left_fork))
-			if (smart_usleep(table, philo, 0))
+		while (take_fork(table, philo, left_fork))
+			if (smart_usleep(table, philo, 10))
 				return (1);
-		while (take_fork(table, philo->index, right_fork))
-			if (smart_usleep(table, philo, 0))
+		while (take_fork(table, philo, right_fork))
+			if (smart_usleep(table, philo, 10))
 				return (1);
 	}
 	else
 	{
-		while (take_fork(table, philo->index, right_fork))
-			if (smart_usleep(table, philo, 0))
+		while (take_fork(table, philo, right_fork))
+			if (smart_usleep(table, philo, 10))
 				return (1);
-		while (take_fork(table, philo->index, left_fork))
-			if (smart_usleep(table, philo, 0))
+		while (take_fork(table, philo, left_fork))
+			if (smart_usleep(table, philo, 10))
 				return (1);
 	}
 	return (0);

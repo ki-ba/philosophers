@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/06/23 16:24:03 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/01 11:21:21 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@
 # include <sys/time.h>
 # include <limits.h>
 # include <stdio.h>
-# include "ft_printf.h"
+# include <unistd.h>
 
 # ifndef DEBUG
 #  define DEBUG 0
 # endif
 
 # ifndef USLEEP_STEP
-#  define USLEEP_STEP 200
+#  define USLEEP_STEP 100
 # endif
 
 # define TRUE 1
@@ -56,7 +56,7 @@ typedef struct s_philo
 	ssize_t			index;
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
-	t_timeval		last_meal;
+	t_timeval		death_time;
 	t_table			*table;
 }					t_philo;
 
@@ -100,7 +100,7 @@ int		philo_die(t_table *table, t_philo *philo);
 
 /* ==== ACTION UTILS.C ==== */
 
-int		take_fork(t_table *table, size_t index, t_fork *fork);
+int		take_fork(t_table *table, t_philo *philo, t_fork *fork);
 int		drop_fork(t_fork *fork);
 int		check_death(t_table *table, t_philo *philo);
 int		should_stop(t_table *table, t_philo *philo);
@@ -133,11 +133,11 @@ void	print_timeval(t_timeval time);
 
 /* ==== UTILS.C ==== */
 
-long	time_to_ms(t_timeval *time);
-long	cur_ms(t_timeval start_time, t_timezone *tz);
 int		smart_usleep(t_table *table, t_philo *philo, int time_ms);
 int		increment_meals(t_table *table, t_philo *philo);
-int		compare_times(t_table *table, t_timeval time, int us);
+long	compare_times(t_table *table, t_timeval time);
+int		compare_times_bool(t_table *table, t_timeval t1);
+void	calculate_delta(t_timeval t1, t_timeval *t2, long delta_us);
 
 /* ==== PARSING.C ==== */
 

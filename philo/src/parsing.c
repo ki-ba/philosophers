@@ -22,14 +22,14 @@ int	parse_args(t_table *table, int argc, char **argv)
 	else
 		table->args[MEAL_OBJ] = ft_atoi(argv[MEAL_OBJ + 1]);
 	table->args[N_PHILO] = ft_atoi(argv[N_PHILO + 1]);
-	table->args[T_DIE] = ft_atoi(argv[T_DIE + 1]);
-	table->args[T_EAT] = ft_atoi(argv[T_EAT + 1]);
-	table->args[T_SLEEP] = ft_atoi(argv[T_SLEEP + 1]);
+	table->args[T_DIE] = ft_atoi(argv[T_DIE + 1]) * 1000;
+	table->args[T_EAT] = ft_atoi(argv[T_EAT + 1]) * 1000;
+	table->args[T_SLEEP] = ft_atoi(argv[T_SLEEP + 1]) * 1000;
 	while (i < MEAL_OBJ + 1)
 	{
 		if (table->args[i] < 0)
 		{
-			ft_putstr_fd("error : one of the args is incorrect\n", 2);
+			write(2, "error : one of the args is incorrect\n", 38);
 			return (1);
 		}
 		++i;
