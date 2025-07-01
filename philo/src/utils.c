@@ -13,11 +13,11 @@
 #include "philosophers.h"
 #include <pthread.h>
 
-long	compare_times(t_table *table, t_timeval time)
+long	compare_times(t_timeval time)
 {
 	t_timeval	now;
 
-	gettimeofday(&now, &table->tz);
+	gettimeofday(&now, NULL);
 	return ((now.tv_sec - time.tv_sec) * 1000000 + now.tv_usec - time.tv_usec);
 }
 
@@ -37,11 +37,11 @@ void	calculate_delta(t_timeval t1, t_timeval *t2, long delta_us)
 	* @returns 1 if now is more than `delta_us` us later than `time`.
 	* @returns 0 if `time` < `now` < `now` + `delta_us`
 */
-int	compare_times_bool(t_table *table, t_timeval t1)
+int	compare_times_bool(t_timeval t1)
 {
 	t_timeval	now;
 
-	gettimeofday(&now, &table->tz);
+	gettimeofday(&now, NULL);
 	if (now.tv_sec > t1.tv_sec)
 		return (1);
 	else if (now.tv_sec == t1.tv_sec && now.tv_usec >= t1.tv_usec)
@@ -54,9 +54,9 @@ int	smart_usleep(t_table *table, t_philo *philo, int time_us)
 	t_timeval	initial_time;
 	t_timeval	t2;
 
-	gettimeofday(&initial_time, &table->tz);
+	gettimeofday(&initial_time, NULL);
 	calculate_delta(initial_time, &t2, time_us);
-	while (!compare_times_bool(table, t2))
+	while (!compare_times_bool(t2))
 	{
 		if (check_death(table, philo))
 			return (1);

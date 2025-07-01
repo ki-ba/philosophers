@@ -19,7 +19,7 @@ int	take_fork(t_table *table, t_philo *philo, t_fork *fork)
 	{
 		fork->in_use = 1;
 		pthread_mutex_unlock(&(fork->fork_mutex));
-		philo_log(table, philo, "has taken a fork\n");
+		philo_log(table, philo->index, "has taken a fork");
 	}
 	else
 	{
@@ -53,7 +53,7 @@ int	check_death(t_table *table, t_philo *philo)
 		pthread_mutex_unlock(&table->death);
 		return (1);
 	}
-	else if (compare_times_bool(table, philo->death_time))
+	else if (compare_times_bool(philo->death_time))
 	{
 		*(philo->dead) = 1;
 		pthread_mutex_unlock(&table->death);

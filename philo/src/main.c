@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <pthread.h>
 
 int	usage(void)
 {
@@ -26,6 +27,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	table = philo->table;
 	pthread_mutex_lock(&table->start_mut);
+	calculate_delta(table->start_time, &philo->death_time, table->args[T_DIE]);
 	pthread_mutex_unlock(&table->start_mut);
 	philo_think(table, philo);
 	if (philo->index % 2)

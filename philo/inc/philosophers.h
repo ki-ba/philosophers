@@ -25,7 +25,7 @@
 # endif
 
 # ifndef USLEEP_STEP
-#  define USLEEP_STEP 100
+#  define USLEEP_STEP 500
 # endif
 
 # define TRUE 1
@@ -51,26 +51,25 @@ typedef struct s_fork
 
 typedef struct s_philo
 {
-	t_fork			*forks[2];
 	int				*dead;
+	t_fork			*forks[2];
+	t_table			*table;
 	ssize_t			index;
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
 	t_timeval		death_time;
-	t_table			*table;
 }					t_philo;
 
 typedef struct s_table
 {
-	t_fork			*forks;
 	int				start;
 	int				weird_smell;
+	t_fork			*forks;
 	ssize_t			n_fed_philos;
 	ssize_t			n_philos;
 	t_philo			*philos;
 	ssize_t			args[5];
 	t_timeval		start_time;
-	t_timezone		tz;
 	pthread_mutex_t	meal_count_mutex;
 	pthread_mutex_t	start_mut;
 	pthread_mutex_t	write;
@@ -92,7 +91,7 @@ int		ft_isdigit(int c);
 
 /* ==== ACTIONS.C ==== */
 
-void	philo_log(t_table *table, t_philo *philo, char msg[]);
+void	philo_log(t_table *table, ssize_t index, char msg[]);
 int		philo_eat(t_table *table, t_philo *philo);
 int		philo_sleep(t_table *table, t_philo *philo);
 int		philo_think(t_table *table, t_philo *philo);
@@ -135,8 +134,8 @@ void	print_timeval(t_timeval time);
 
 int		smart_usleep(t_table *table, t_philo *philo, int time_ms);
 int		increment_meals(t_table *table, t_philo *philo);
-long	compare_times(t_table *table, t_timeval time);
-int		compare_times_bool(t_table *table, t_timeval t1);
+long	compare_times(t_timeval time);
+int		compare_times_bool(t_timeval t1);
 void	calculate_delta(t_timeval t1, t_timeval *t2, long delta_us);
 
 /* ==== PARSING.C ==== */

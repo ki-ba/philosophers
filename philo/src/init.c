@@ -30,7 +30,6 @@ int	init_philo(t_table *table, size_t index)
 	n_rfork = index - 1;
 	philo->forks[0] = &table->forks[n_lfork];
 	philo->forks[1] = &table->forks[n_rfork];
-	calculate_delta(table->start_time, &philo->death_time, table->args[T_DIE]);
 	if (pthread_create(&philo->philo_thread, NULL, routine, philo))
 		return (1);
 	return (0);
@@ -109,12 +108,12 @@ int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 	table->n_philos = table->args[N_PHILO];
 	if (!table->forks || !table->philos)
 		return (destroy_mutexes(table) + 1);
-	gettimeofday(&table->start_time, &table->tz);
 	if (init_philos(table, table->args[N_PHILO]))
 	{
 		destroy_forks(table->forks, table->args[N_PHILO]);
 		return (destroy_mutexes(table) + 1);
 	}
+	gettimeofday(&table->start_time, NULL);
 	pthread_mutex_unlock(&table->start_mut);
 	return (0);
 }
