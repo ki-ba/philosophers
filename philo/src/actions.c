@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 12:59:47 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/01 11:18:07 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/01 19:28:47 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@ void	philo_log(t_table *table, ssize_t index, char msg[])
 {
 	long	time_ms;
 
-	if (silent_check_death(table))
-		return ;
 	pthread_mutex_lock(&table->write);
+	if (silent_check_death(table))
+	{
+		pthread_mutex_unlock(&table->write);
+		return ;
+	}
 	time_ms = compare_times(table->start_time) / 1000;
 	printf("%ld	%0.2zu %s\n", time_ms, index, msg);
 	pthread_mutex_unlock(&table->write);
