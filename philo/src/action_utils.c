@@ -89,20 +89,16 @@ int	take_forks(t_table *table, t_philo *philo)
 	if (philo->index % 2)
 	{
 		while (take_fork(table, philo, left_fork))
-			if (smart_usleep(table, philo, 10))
-				return (1);
+			usleep(10);
 		while (take_fork(table, philo, right_fork))
-			if (smart_usleep(table, philo, 10))
-				return (1);
+			usleep(10);
 	}
 	else
 	{
 		while (take_fork(table, philo, right_fork))
-			if (smart_usleep(table, philo, 10))
-				return (1);
+			usleep(10);
 		while (take_fork(table, philo, left_fork))
-			if (smart_usleep(table, philo, 10))
-				return (1);
+			usleep(10);
 	}
 	return (0);
 }
