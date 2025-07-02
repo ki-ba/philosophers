@@ -45,7 +45,7 @@ int	init_philos(t_table *table, size_t n_philos)
 		if (init_philo(table, i + 1))
 		{
 			table->n_philos = i;
-			write(2, "warning : couldnt create philo.\n", 33);
+			ft_putstr_fd("warning : couldnt create philo.\n", 2);
 			break ;
 		}
 		++i;
@@ -58,6 +58,8 @@ int	init_forks(t_table *table, int n_philo)
 	int	i;
 
 	i = -1;
+	if (table->philos == NULL)
+		return (1);
 	table->forks = ft_calloc(n_philo, sizeof(t_fork));
 	if (!table->forks)
 	{
@@ -68,6 +70,7 @@ int	init_forks(t_table *table, int n_philo)
 	{
 		if (pthread_mutex_init(&(table->forks[i].fork_mutex), NULL))
 		{
+			free(table->philos);
 			destroy_forks(table->forks, i);
 			return (1);
 		}

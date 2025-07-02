@@ -88,6 +88,7 @@ void	*ft_calloc(size_t nmemb, size_t size);
 ssize_t	ft_atoi(const char *nptr);
 int		ft_iswhitespace(int c);
 int		ft_isdigit(int c);
+void	ft_putstr_fd(char *s, int fd);
 
 /* ==== ACTIONS.C ==== */
 

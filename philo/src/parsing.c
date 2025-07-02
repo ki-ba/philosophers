@@ -29,7 +29,7 @@ int	parse_args(t_table *table, int argc, char **argv)
 	{
 		if (table->args[i] < 0)
 		{
-			write(2, "error : one of the args is incorrect\n", 38);
+			ft_putstr_fd("error : one of the args is incorrect\n", 2);
 			return (1);
 		}
 		++i;

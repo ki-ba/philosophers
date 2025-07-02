@@ -15,7 +15,7 @@
 
 int	usage(void)
 {
-	write(2, "usage : ./philo time_die time_eat time_sleep [n_meals]\n", 56);
+	ft_putstr_fd("usage : ./philo time_die time_eat time_sleep [n_meals]\n", 2);
 	return (1);
 }
 
