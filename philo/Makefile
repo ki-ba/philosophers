@@ -4,8 +4,6 @@ SANITIZE_FLAGS = -Wall -Wextra -g -fsanitize=thread
 DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
 NL_SRC = ft_calloc.c ft_atoi.c ft_ctype.c
-PRINTF_SRC = ft_printf.c  ft_is_in.c ft_put_ul_base.c ft_putchar.c ft_putchar_fd.c ft_putnbr_base.c ft_putnbr_fd.c ft_putstr_fd.c \
-			 ft_strlen.c
 M_SRC = main.c init.c destroy.c actions.c action_utils.c utils.c parsing.c
 
 N_INC = philosophers.h
