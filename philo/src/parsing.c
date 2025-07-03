@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:49:20 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/03 19:22:07 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/03 19:25:19 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int	parse_args(t_table *table, int argc, char **argv)
 	table->args[T_SLEEP] = ft_atoi(argv[T_SLEEP + 1]) * 1000;
 	while (i < MEAL_OBJ + 1)
 	{
-		if (table->args[i] < 1)
+		if (table->args[i] < 0)
 		{
-			ft_putstr_fd("error : one of the args is null/incorrect\n", 2);
+			ft_putstr_fd("error : one of the args is incorrect\n", 2);
 			return (1);
 		}
 		++i;
