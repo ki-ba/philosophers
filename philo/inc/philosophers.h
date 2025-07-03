@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/01 11:21:21 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/03 18:52:16 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ typedef struct s_philo
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
 	t_timeval		death_time;
+	pthread_mutex_t	dt_mutex;
 }					t_philo;
 
 typedef struct s_table
 {
-	int				start;
 	int				weird_smell;
 	t_fork			*forks;
 	ssize_t			n_fed_philos;
@@ -88,10 +88,11 @@ void	*ft_calloc(size_t nmemb, size_t size);
 ssize_t	ft_atoi(const char *nptr);
 int		ft_iswhitespace(int c);
 int		ft_isdigit(int c);
+void	ft_putstr_fd(char *s, int fd);
 
 /* ==== ACTIONS.C ==== */
 
-void	philo_log(t_table *table, ssize_t index, char msg[]);
+int		philo_log(t_table *table, ssize_t index, char msg[]);
 int		philo_eat(t_table *table, t_philo *philo);
 int		philo_sleep(t_table *table, t_philo *philo);
 int		philo_think(t_table *table, t_philo *philo);
@@ -101,8 +102,8 @@ int		philo_die(t_table *table, t_philo *philo);
 
 int		take_fork(t_table *table, t_philo *philo, t_fork *fork);
 int		drop_fork(t_fork *fork);
-int		check_death(t_table *table, t_philo *philo);
-int		should_stop(t_table *table, t_philo *philo);
+int		check_death(t_table *table);
+int		should_stop(t_table *table);
 int		take_forks(t_table *table, t_philo *philo);
 
 /* ==== DEBUG.C ==== */
@@ -121,18 +122,18 @@ int		init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write);
 
 int		destroy_forks(t_fork *forks, int i);
 int		destroy_mutexes(t_table *table);
+int		end_destroy_mutexes(t_table	*table);
 
 /* ===== MAIN.C ==== */
 
 void	*routine(void *arg);
 int		join_philos(t_table *table);
 int		main(int argc, char *argv[]);
-int		silent_check_death(t_table *table);
 void	print_timeval(t_timeval time);
 
 /* ==== UTILS.C ==== */
 
-int		smart_usleep(t_table *table, t_philo *philo, int time_ms);
+int		smart_usleep(t_table *table, int time_ms);
 int		increment_meals(t_table *table, t_philo *philo);
 long	compare_times(t_timeval time);
 int		compare_times_bool(t_timeval t1);
@@ -141,5 +142,9 @@ void	calculate_delta(t_timeval t1, t_timeval *t2, long delta_us);
 /* ==== PARSING.C ==== */
 
 int		parse_args(t_table *table, int argc, char *argv[]);
+
+/* ==== MONITOR.C ==== */
+
+int		monitor(t_table	*table);
 
 #endif

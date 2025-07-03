@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/01 11:23:03 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/03 18:11:58 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ int	init_philo(t_table *table, size_t index)
 	philo->index = index;
 	philo->table = table;
 	philo->n_meals = 0;
+	if (pthread_mutex_init(&philo->dt_mutex, NULL))
+		return (1);
 	if (index == 1)
 		n_lfork = table->n_philos - 1;
 	else
@@ -45,7 +47,7 @@ int	init_philos(t_table *table, size_t n_philos)
 		if (init_philo(table, i + 1))
 		{
 			table->n_philos = i;
-			write(2, "warning : couldnt create philo.\n", 33);
+			ft_putstr_fd("warning : couldnt create philo.\n", 2);
 			break ;
 		}
 		++i;
@@ -95,7 +97,6 @@ int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 {
 	if (parse_args(table, ac, av))
 		return (1);
-	table->start = 0;
 	table->weird_smell = 0;
 	table->write = *write;
 	if (init_mutexes(table))
@@ -113,7 +114,5 @@ int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
 		destroy_forks(table->forks, table->args[N_PHILO]);
 		return (destroy_mutexes(table) + 1);
 	}
-	gettimeofday(&table->start_time, NULL);
-	pthread_mutex_unlock(&table->start_mut);
 	return (0);
 }

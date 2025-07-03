@@ -6,12 +6,11 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 11:07:04 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/01 11:36:32 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/03 18:52:37 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <pthread.h>
 
 long	compare_times(t_timeval time)
 {
@@ -49,7 +48,7 @@ int	compare_times_bool(t_timeval t1)
 	return (0);
 }
 
-int	smart_usleep(t_table *table, t_philo *philo, int time_us)
+int	smart_usleep(t_table *table, int time_us)
 {
 	t_timeval	initial_time;
 	t_timeval	t2;
@@ -58,11 +57,11 @@ int	smart_usleep(t_table *table, t_philo *philo, int time_us)
 	calculate_delta(initial_time, &t2, time_us);
 	while (!compare_times_bool(t2))
 	{
-		if (check_death(table, philo))
+		if (check_death(table))
 			return (1);
 		usleep(USLEEP_STEP);
 	}
-	return (should_stop(table, philo));
+	return (check_death(table));
 }
 
 int	increment_meals(t_table *table, t_philo *philo)
