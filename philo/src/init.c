@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/03 18:11:58 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/07/03 19:11:59 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ int	init_philo(t_table *table, size_t index)
 	philo->table = table;
 	philo->n_meals = 0;
 	if (pthread_mutex_init(&philo->dt_mutex, NULL))
+	{
+		ft_putstr_fd("failed to init mutex\n", 2);
 		return (1);
+	}
 	if (index == 1)
 		n_lfork = table->n_philos - 1;
 	else
@@ -47,7 +50,7 @@ int	init_philos(t_table *table, size_t n_philos)
 		if (init_philo(table, i + 1))
 		{
 			table->n_philos = i;
-			ft_putstr_fd("warning : couldnt create philo.\n", 2);
+			ft_putstr_fd("warning : >= 1 philos couldnt be created.\n", 2);
 			break ;
 		}
 		++i;
@@ -65,6 +68,7 @@ int	init_forks(t_table *table, int n_philo)
 	table->forks = ft_calloc(n_philo, sizeof(t_fork));
 	if (!table->forks)
 	{
+		ft_putstr_fd("failed to allocate memory\n", 2);
 		free(table->philos);
 		return (1);
 	}
@@ -72,6 +76,7 @@ int	init_forks(t_table *table, int n_philo)
 	{
 		if (pthread_mutex_init(&(table->forks[i].fork_mutex), NULL))
 		{
+			ft_putstr_fd("failed to init mutex\n", 2);
 			free(table->philos);
 			destroy_forks(table->forks, i);
 			return (1);
@@ -93,6 +98,7 @@ int	init_mutexes(t_table *table)
 		}
 		pthread_mutex_destroy(&table->start_mut);
 	}
+	ft_putstr_fd("failed to init mutex\n", 2);
 	return (1);
 }
 
