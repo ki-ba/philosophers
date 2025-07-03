@@ -1,5 +1,5 @@
 NAME = philo
-FLAGS = -Wall -Wextra -Werror -g -pg
+FLAGS = -Wall -Wextra -Werror -g
 SANITIZE_FLAGS = -Wall -Wextra -g -fsanitize=thread
 DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
@@ -10,7 +10,6 @@ M_SRC = main.c init.c destroy.c actions.c action_utils.c utils.c parsing.c \
 N_INC = philosophers.h
 
 P_NL = $(addprefix $(NOT_LIBFT_DIR), $(NL_SRC))
-P_PRINTF = $(addprefix $(NOT_PRINTF_DIR), $(PRINTF_SRC))
 
 SRC_DIR = src/
 OBJ_DIR = .obj/
