@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <pthread.h>
 
 static void	someone_died(t_table *table)
 {

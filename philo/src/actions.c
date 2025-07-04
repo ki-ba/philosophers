@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <sys/time.h>
 
 int	philo_log(t_table *table, ssize_t index, char msg[])
 {
