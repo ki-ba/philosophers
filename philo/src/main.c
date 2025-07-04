@@ -42,7 +42,6 @@ void	*routine(void *arg)
 			break ;
 		philo_think(table, philo);
 	}
-	pthread_mutex_destroy(&philo->dt_mutex);
 	return (NULL);
 }
 
@@ -58,6 +57,9 @@ int	join_philos(t_table *table)
 		if (pthread_join((philos[i].philo_thread), NULL))
 			return (1);
 	}
+	i = -1;
+	while (++i < table->n_philos)
+		pthread_mutex_destroy(&(philos[i].dt_mutex));
 	free(table->forks);
 	free(table->philos);
 	return (end_destroy_mutexes(table));

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <pthread.h>
 
 static void	someone_died(t_table *table)
 {
@@ -46,7 +47,6 @@ static	int	look_for_deaths(t_table *table, ssize_t i, int *death)
 	}
 	else
 		pthread_mutex_unlock(&table->philos[i].dt_mutex);
-	pthread_mutex_lock(&table->death);
 	return (0);
 }
 
@@ -56,7 +56,6 @@ int	monitor(t_table	*table)
 	ssize_t		i;
 	t_timeval	now;
 
-	usleep(table->args[T_DIE] / 2);
 	death = 0;
 	i = 0;
 	while (!death)
@@ -65,6 +64,7 @@ int	monitor(t_table	*table)
 		if (i == table->args[N_PHILO] - 1)
 			check_hungryness(table);
 		look_for_deaths(table, i, &death);
+		pthread_mutex_lock(&table->death);
 		if (table->weird_smell)
 		{
 			pthread_mutex_unlock(&table->death);
