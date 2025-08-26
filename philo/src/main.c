@@ -6,17 +6,11 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:05:56 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/30 17:09:15 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/08/26 14:42:26 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-int	usage(void)
-{
-	ft_putstr_fd("usage : ./philo time_die time_eat time_sleep [n_meals]\n", 2);
-	return (1);
-}
 
 void	*routine(void *arg)
 {
@@ -76,7 +70,7 @@ int	main(int argc, char *argv[])
 	if (pthread_mutex_init(&write_mut, NULL))
 		return (1);
 	if (argc < 5 || argc > 6)
-		return (usage());
+		return (error(USAGE_EXIT_CODE));
 	if (init_table(&table, argc, argv, &write_mut))
 		return (1);
 	i = -1;

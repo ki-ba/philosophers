@@ -5,7 +5,7 @@ DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
 NL_SRC = ft_calloc.c ft_atoi.c ft_ctype.c ft_putstr_fd.c
 M_SRC = main.c init.c destroy.c actions.c action_utils.c utils.c parsing.c \
-		monitor.c
+		monitor.c error.c
 
 N_INC = philosophers.h
 

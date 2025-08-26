@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/03 18:52:16 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/08/26 14:41:00 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 
 # define TRUE 1
 # define FALSE 0
+
+# define USAGE_EXIT_CODE 2
 
 /* ==== ARGS ARRAY INDEXES ==== */
 
@@ -123,6 +125,10 @@ int		init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write);
 int		destroy_forks(t_fork *forks, int i);
 int		destroy_mutexes(t_table *table);
 int		end_destroy_mutexes(t_table	*table);
+
+/* ===== ERROR.C ===== */
+
+int		error(int errcode);
 
 /* ===== MAIN.C ==== */
 

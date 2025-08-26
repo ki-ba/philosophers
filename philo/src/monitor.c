@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 18:35:41 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/03 18:59:57 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/08/26 14:42:12 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	check_hungryness(t_table	*table)
 	if (table->n_fed_philos == table->n_philos)
 		someone_died(table);
 	pthread_mutex_unlock(&table->meal_count_mutex);
-	usleep(10000);
+	usleep(7000);
 }
 
 static	int	look_for_deaths(t_table *table, ssize_t i, int *death)
