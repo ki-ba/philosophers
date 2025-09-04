@@ -25,9 +25,7 @@ void	*routine(void *arg)
 	pthread_mutex_unlock(&philo->dt_mutex);
 	philo_log(table, philo->index, "is thinking");
 	if (!(philo->index % 2))
-	{
-		usleep(table->args[T_EAT] / 2);
-	}
+		smart_usleep(table, table->args[T_EAT] / 2);
 	while (!check_death(table))
 	{
 		if (philo_eat(table, philo))
