@@ -3,7 +3,7 @@ FLAGS = -Wall -Wextra -Werror -g
 SANITIZE_FLAGS = -Wall -Wextra -g -fsanitize=thread
 DEBUG_FLAGS = -Wall -Wextra -g -D DEBUG=1
 
-NL_SRC = ft_calloc.c ft_atoi.c ft_ctype.c ft_putstr_fd.c
+NL_SRC = ft_calloc.c ft_atoi.c ft_ctype.c ft_putstr_fd.c ft_is_number.c
 M_SRC = main.c init.c destroy.c actions.c action_utils.c utils.c parsing.c \
 		monitor.c error.c
 

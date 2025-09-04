@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/08/26 14:41:00 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/09/04 23:01:00 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,16 @@
 # define TRUE 1
 # define FALSE 0
 
-# define USAGE_EXIT_CODE 2
+/* ==== ERROR CODES ==== */
+
+# define SUCCESS 0
+# define ERR_OVERFLOW 1
+# define ERR_USAGE 2
+# define ERR_NEGATIVE 3
+# define ERR_NULL 4
+# define ERR_NON_NUMERIC 5
+# define ERR_MEMORY 6
+# define ERR_INIT 7
 
 /* ==== ARGS ARRAY INDEXES ==== */
 
@@ -65,8 +74,10 @@ typedef struct s_philo
 	ssize_t			index;
 	ssize_t			n_meals;
 	pthread_t		philo_thread;
+	int				thread_canary;
 	t_timeval		death_time;
 	pthread_mutex_t	dt_mutex;
+	int				dt_canary;
 }					t_philo;
 
 typedef struct s_table
@@ -96,6 +107,7 @@ void	*ft_calloc(size_t nmemb, size_t size);
 ssize_t	ft_atoi(const char *nptr);
 int		ft_iswhitespace(int c);
 int		ft_isdigit(int c);
+int		ft_is_number(char *n);
 void	ft_putstr_fd(char *s, int fd);
 
 /* ==== ACTIONS.C ==== */
@@ -122,12 +134,14 @@ void	table_id(t_table *table);
 /* ==== INIT.C ==== */
 
 int		init_philo(t_table *table, size_t index);
-int		init_philos(t_table *table, size_t n_philos);
+int		init_philos(t_table *table, ssize_t n_philos);
 int		init_forks(t_table *table, int n_philo);
-int		init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write);
+int		init_table(t_table *table);
 
 /* ==== DESTROY.C ==== */
 
+int		destroy_philos(t_philo *philos, int n_philos);
+int		destroy_table(t_table *table);
 int		destroy_forks(t_fork *forks, int i);
 int		destroy_mutexes(t_table *table);
 int		end_destroy_mutexes(t_table	*table);

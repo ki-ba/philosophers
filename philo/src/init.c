@@ -6,11 +6,12 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/07/30 17:08:11 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/09/04 23:50:36 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <pthread.h>
 
 int	init_philo(t_table *table, size_t index)
 {
@@ -22,39 +23,40 @@ int	init_philo(t_table *table, size_t index)
 	philo->dead = &(table->weird_smell);
 	philo->index = index;
 	philo->table = table;
+	philo->dt_canary = 0;
+	philo->thread_canary = 0;
 	philo->n_meals = 0;
 	if (pthread_mutex_init(&philo->dt_mutex, NULL))
-	{
-		ft_putstr_fd("failed to init mutex\n", 2);
-		return (1);
-	}
+		return (ERR_INIT);
+	philo->dt_canary = 1;
 	if (index == 1)
-		n_lfork = table->n_philos - 1;
+		n_lfork = table->args[N_PHILO] - 1;
 	else
-		n_lfork = (index - 2) % table->n_philos;
+		n_lfork = (index - 2) % table->args[N_PHILO];
 	n_rfork = index - 1;
 	philo->forks[0] = &table->forks[n_lfork];
 	philo->forks[1] = &table->forks[n_rfork];
 	if (pthread_create(&philo->philo_thread, NULL, routine, philo))
-		return (1);
+		return (ERR_INIT);
+	philo->thread_canary = 1;
 	return (0);
 }
 
-int	init_philos(t_table *table, size_t n_philos)
+int	init_philos(t_table *table, ssize_t n_philos)
 {
-	size_t	i;
+	ssize_t	i;
 
 	i = 0;
+	table->n_philos = 0;
 	while (i < n_philos)
 	{
 		if (init_philo(table, i + 1))
-		{
-			table->n_philos = i;
-			ft_putstr_fd("warning : >= 1 philos couldnt be created.\n", 2);
 			break ;
-		}
 		++i;
+		table->n_philos = i;
 	}
+	if (table->n_philos != n_philos)
+		return (ERR_INIT);
 	return (0);
 }
 
@@ -63,23 +65,13 @@ int	init_forks(t_table *table, int n_philo)
 	int	i;
 
 	i = -1;
-	if (table->philos == NULL)
-		return (1);
-	table->forks = ft_calloc(n_philo, sizeof(t_fork));
-	if (!table->forks)
-	{
-		ft_putstr_fd("failed to allocate memory\n", 2);
-		free(table->philos);
-		return (1);
-	}
 	while (++i < n_philo)
 	{
 		if (pthread_mutex_init(&(table->forks[i].fork_mutex), NULL))
 		{
-			ft_putstr_fd("failed to init mutex\n", 2);
-			free(table->philos);
 			destroy_forks(table->forks, i);
-			return (1);
+			table->forks = NULL;
+			return (ERR_INIT);
 		}
 	}
 	return (0);
@@ -87,41 +79,49 @@ int	init_forks(t_table *table, int n_philo)
 
 int	init_mutexes(t_table *table)
 {
-	if (!pthread_mutex_init(&table->start_mut, NULL))
+	if (!pthread_mutex_init(&table->write, NULL))
 	{
-		if (!pthread_mutex_init(&table->meal_count_mutex, NULL))
+		if (!pthread_mutex_init(&table->start_mut, NULL))
 		{
-			if (!pthread_mutex_init(&table->death, NULL))
-				return (0);
-			pthread_mutex_destroy(&table->death);
-			pthread_mutex_destroy(&table->meal_count_mutex);
+			if (!pthread_mutex_init(&table->meal_count_mutex, NULL))
+			{
+				if (!pthread_mutex_init(&table->death, NULL))
+					return (0);
+				pthread_mutex_destroy(&table->meal_count_mutex);
+			}
+			pthread_mutex_destroy(&table->start_mut);
 		}
-		pthread_mutex_destroy(&table->start_mut);
+		pthread_mutex_destroy(&table->write);
 	}
 	ft_putstr_fd("failed to init mutex\n", 2);
 	return (1);
 }
 
-int	init_table(t_table *table, int ac, char *av[], pthread_mutex_t *write)
+int	init_table(t_table *table)
 {
-	if (parse_args(table, ac, av))
-		return (1);
-	table->weird_smell = 0;
-	table->write = *write;
+	int	err;
+
 	if (init_mutexes(table))
-		return (1);
-	pthread_mutex_lock(&table->start_mut);
+		return (ERR_INIT);
+	table->weird_smell = 0;
 	table->n_fed_philos = 0;
 	table->philos = ft_calloc(table->args[N_PHILO], sizeof(t_philo));
-	if (init_forks(table, table->args[N_PHILO]))
-		return (destroy_mutexes(table) + 1);
-	table->n_philos = table->args[N_PHILO];
+	table->forks = ft_calloc(table->args[N_PHILO], sizeof(t_fork));
 	if (!table->forks || !table->philos)
-		return (destroy_mutexes(table) + 1);
-	if (init_philos(table, table->args[N_PHILO]))
 	{
-		destroy_forks(table->forks, table->args[N_PHILO]);
-		return (destroy_mutexes(table) + 1);
+		table->n_philos = 0;
+		destroy_table(table);
+		return (ERR_MEMORY);
+	}
+	err = init_forks(table, table->args[N_PHILO]);
+	pthread_mutex_lock(&table->start_mut);
+	if (!err)
+		err = init_philos(table, table->args[N_PHILO]);
+	if (err)
+	{
+		pthread_mutex_unlock(&table->start_mut);
+		(destroy_table(table));
+		return (err);
 	}
 	return (0);
 }

@@ -46,31 +46,32 @@ int	join_philos(t_table *table)
 	i = -1;
 	while (++i < table->n_philos)
 	{
-		if (pthread_join((philos[i].philo_thread), NULL))
-			return (1);
+		if (philos[i].thread_canary)
+			pthread_join((philos[i].philo_thread), NULL);
 	}
 	i = -1;
 	while (++i < table->n_philos)
-		pthread_mutex_destroy(&(philos[i].dt_mutex));
-	free(table->forks);
-	free(table->philos);
-	return (end_destroy_mutexes(table));
+	{
+		if (philos[i].dt_canary)
+			pthread_mutex_destroy(&(philos[i].dt_mutex));
+	}
+	return (0);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_table			table;
-	pthread_mutex_t	write_mut;
 	ssize_t			i;
 	t_philo			*philos;
 	int				t_die;
+	int				err;
 
-	if (pthread_mutex_init(&write_mut, NULL))
-		return (1);
-	if (argc < 5 || argc > 6)
-		return (error(USAGE_EXIT_CODE));
-	if (init_table(&table, argc, argv, &write_mut))
-		return (1);
+	err = parse_args(&table, argc, argv);
+	if (err)
+		return (error(err));
+	err = (init_table(&table));
+	if (err)
+		return (error(err));
 	i = -1;
 	t_die = table.args[T_DIE];
 	philos = table.philos;
@@ -79,5 +80,5 @@ int	main(int argc, char *argv[])
 		calculate_delta(table.start_time, &philos[i].death_time, t_die);
 	pthread_mutex_unlock(&table.start_mut);
 	monitor(&table);
-	return (join_philos(&table));
+	return (destroy_table(&table));
 }

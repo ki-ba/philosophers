@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_is_number.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/12 13:27:11 by kbarru            #+#    #+#             */
-/*   Updated: 2025/09/04 23:32:57 by kbarru           ###   ########lyon.fr   */
+/*   Created: 2025/09/04 22:58:41 by kbarru            #+#    #+#             */
+/*   Updated: 2025/09/04 23:09:19 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <bits/posix1_lim.h>
-#include <limits.h>
 
-ssize_t	ft_atoi(const char *nptr)
+int	ft_is_number(char *n)
 {
-	ssize_t	n;
+	int	i;
 
-	n = 0;
-	while (nptr && *nptr)
+	i = 0;
+	if (!n)
+		return (FALSE);
+	while (n[i])
 	{
-		if (!ft_isdigit(*nptr))
-			return (-1);
-		if (n > INT_MAX / 10 || (n == INT_MAX / 10 && *nptr > '7'))
-			return ((ssize_t)INT_MAX + 1);
-		n = (n * 10) + (*nptr - 48);
-		++nptr;
+		if (!ft_isdigit(n[i]))
+			return (FALSE);
+		++i;
 	}
-	return (n);
+	return (TRUE);
 }

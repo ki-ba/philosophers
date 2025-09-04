@@ -11,23 +11,36 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <pthread.h>
+
+int	destroy_table(t_table *table)
+{
+	pthread_mutex_lock(&table->death);
+	table->weird_smell = 1;
+	pthread_mutex_unlock(&table->death);
+	join_philos(table);
+	destroy_forks(table->forks, table->n_philos);
+	destroy_mutexes(table);
+	free(table->philos);
+	return (0);
+}
 
 int	destroy_forks(t_fork *forks, int i)
 {
+	if (!forks)
+		return (1);
 	while (--i > 0)
-	{
 		pthread_mutex_destroy(&forks[i].fork_mutex);
-	}
 	free(forks);
 	return (0);
 }
 
 int	destroy_mutexes(t_table *table)
 {
-	pthread_mutex_unlock(&table->start_mut);
 	pthread_mutex_destroy(&table->death);
 	pthread_mutex_destroy(&table->meal_count_mutex);
 	pthread_mutex_destroy(&table->start_mut);
+	pthread_mutex_destroy(&table->write);
 	return (0);
 }
 
