@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/20 12:49:20 by kbarru            #+#    #+#             */
-/*   Updated: 2025/09/04 23:53:59 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/09/05 01:33:22 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	check_args(int argc, char **argv)
 			return (ERR_OVERFLOW);
 		if (current < 0)
 			return (ERR_NEGATIVE);
-		if (current == 0 && (i == MEAL_OBJ + 1 || i == N_PHILO + 1))
+		if (current == 0 && i == N_PHILO + 1)
 			return (ERR_NULL);
 		if (i >= T_DIE + 1 && i <= T_SLEEP + 1)
 		{

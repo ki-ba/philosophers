@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 13:02:19 by kbarru            #+#    #+#             */
-/*   Updated: 2025/09/04 23:50:36 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/09/05 01:32:45 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	init_table(t_table *table)
 	if (init_mutexes(table))
 		return (ERR_INIT);
 	table->weird_smell = 0;
-	table->n_fed_philos = 0;
+	table->n_fed_philos = table->args[N_PHILO] * (table->args[MEAL_OBJ] == 0);
 	table->philos = ft_calloc(table->args[N_PHILO], sizeof(t_philo));
 	table->forks = ft_calloc(table->args[N_PHILO], sizeof(t_fork));
 	if (!table->forks || !table->philos)
