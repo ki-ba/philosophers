@@ -23,7 +23,7 @@ void	*routine(void *arg)
 	pthread_mutex_unlock(&table->start_mut);
 	pthread_mutex_lock(&philo->dt_mutex);
 	pthread_mutex_unlock(&philo->dt_mutex);
-	philo_log(table, philo->index, "is thinking");
+	philo_log(table, philo->index, THINK_MSG);
 	if (!(philo->index % 2))
 		smart_usleep(table, table->args[T_EAT] / 2);
 	while (!check_death(table))

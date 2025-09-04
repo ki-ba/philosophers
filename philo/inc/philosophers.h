@@ -20,6 +20,12 @@
 # include <stdio.h>
 # include <unistd.h>
 
+# define EAT_MSG "is eating"
+# define THINK_MSG "is thinking"
+# define SLEEP_MSG "is sleeping"
+# define DIE_MSG "died"
+# define FORK_MSG "has taken a fork"
+
 # ifndef DEBUG
 #  define DEBUG 0
 # endif

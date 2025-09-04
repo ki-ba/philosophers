@@ -44,7 +44,7 @@ int	philo_eat(t_table *table, t_philo *philo)
 	pthread_mutex_lock(&philo->dt_mutex);
 	calculate_delta(now, &philo->death_time, table->args[T_DIE]);
 	pthread_mutex_unlock(&philo->dt_mutex);
-	if (philo_log(table, philo->index, "is eating"))
+	if (philo_log(table, philo->index, EAT_MSG))
 		return (1);
 	if (smart_usleep(table, table->args[T_EAT]))
 		return (1);
@@ -56,13 +56,13 @@ int	philo_eat(t_table *table, t_philo *philo)
 
 int	philo_sleep(t_table *table, t_philo *philo)
 {
-	philo_log(table, philo->index, "is sleeping");
+	philo_log(table, philo->index, SLEEP_MSG);
 	return (smart_usleep(table, table->args[T_SLEEP]));
 }
 
 int	philo_think(t_table *table, t_philo *philo)
 {
-	philo_log(table, philo->index, "is thinking");
+	philo_log(table, philo->index, THINK_MSG);
 	if (table->args[N_PHILO] % 2 != 0 && philo->n_meals)
 		return (smart_usleep(table, table->args[T_EAT]));
 	return (0);

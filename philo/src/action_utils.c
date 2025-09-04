@@ -19,7 +19,7 @@ int	take_fork(t_table *table, t_philo *philo, t_fork *fork)
 	{
 		fork->in_use = 1;
 		pthread_mutex_unlock(&(fork->fork_mutex));
-		philo_log(table, philo->index, "has taken a fork");
+		philo_log(table, philo->index, FORK_MSG);
 	}
 	else
 	{

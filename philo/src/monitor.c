@@ -25,7 +25,6 @@ static void	check_hungryness(t_table	*table)
 	if (table->n_fed_philos == table->n_philos)
 		someone_died(table);
 	pthread_mutex_unlock(&table->meal_count_mutex);
-	usleep(7000);
 }
 
 static	int	look_for_deaths(t_table *table, ssize_t i, int *death)
@@ -40,7 +39,7 @@ static	int	look_for_deaths(t_table *table, ssize_t i, int *death)
 		pthread_mutex_unlock(&table->philos[i].dt_mutex);
 		pthread_mutex_lock(&table->write);
 		time_ms = compare_times(table->start_time) / 1000;
-		printf("%ld	%0.3zu	died\n", time_ms, i + 1);
+		printf("%ld	%0.3zu	%s\n", time_ms, i + 1, DIE_MSG);
 		pthread_mutex_unlock(&table->write);
 		return (1);
 	}
@@ -71,6 +70,7 @@ int	monitor(t_table	*table)
 		}
 		pthread_mutex_unlock(&table->death);
 		i = (i + 1) % table->args[N_PHILO];
+		usleep(USLEEP_STEP);
 	}
 	return (0);
 }
