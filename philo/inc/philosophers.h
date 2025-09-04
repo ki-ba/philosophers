@@ -6,7 +6,7 @@
 /*   By: kbarru <kbarru@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 15:51:18 by kbarru            #+#    #+#             */
-/*   Updated: 2025/09/04 23:01:00 by kbarru           ###   ########lyon.fr   */
+/*   Updated: 2025/09/04 23:58:10 by kbarru           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,28 @@
 
 /* ==== ERROR CODES ==== */
 
-# define SUCCESS 0
-# define ERR_OVERFLOW 1
-# define ERR_USAGE 2
-# define ERR_NEGATIVE 3
-# define ERR_NULL 4
-# define ERR_NON_NUMERIC 5
-# define ERR_MEMORY 6
-# define ERR_INIT 7
+typedef enum e_error
+{
+	SUCCESS = 0,
+	ERR_OVERFLOW,
+	ERR_USAGE,
+	ERR_NEGATIVE,
+	ERR_NULL,
+	ERR_NON_NUMERIC,
+	ERR_MEMORY,
+	ERR_INIT
+}	t_error;
 
 /* ==== ARGS ARRAY INDEXES ==== */
 
-# define N_PHILO 0
-# define T_DIE 1
-# define T_EAT 2
-# define T_SLEEP 3
-# define MEAL_OBJ 4
+typedef enum e_arg_index
+{
+	N_PHILO = 0,
+	T_DIE,
+	T_EAT,
+	T_SLEEP,
+	MEAL_OBJ
+}	t_arg_index;
 
 typedef struct timeval	t_timeval;
 typedef struct timezone	t_timezone;
