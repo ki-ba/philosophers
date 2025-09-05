@@ -93,8 +93,7 @@ int	init_mutexes(t_table *table)
 		}
 		pthread_mutex_destroy(&table->write);
 	}
-	ft_putstr_fd("failed to init mutex\n", 2);
-	return (1);
+	return (ERR_INIT);
 }
 
 int	init_table(t_table *table)
@@ -103,13 +102,13 @@ int	init_table(t_table *table)
 
 	if (init_mutexes(table))
 		return (ERR_INIT);
+	table->n_philos = 0;
 	table->weird_smell = 0;
 	table->n_fed_philos = table->args[N_PHILO] * (table->args[MEAL_OBJ] == 0);
 	table->philos = ft_calloc(table->args[N_PHILO], sizeof(t_philo));
 	table->forks = ft_calloc(table->args[N_PHILO], sizeof(t_fork));
 	if (!table->forks || !table->philos)
 	{
-		table->n_philos = 0;
 		destroy_table(table);
 		return (ERR_MEMORY);
 	}
