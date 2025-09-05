@@ -82,7 +82,7 @@ int	parse_args(t_table *table, int argc, char **argv)
 	if (error)
 		return (error);
 	if (argc < 6)
-		table->args[MEAL_OBJ] = 0;
+		table->args[MEAL_OBJ] = -1;
 	else
 		table->args[MEAL_OBJ] = ft_atoi(argv[MEAL_OBJ + 1]);
 	table->args[N_PHILO] = ft_atoi(argv[N_PHILO + 1]);
