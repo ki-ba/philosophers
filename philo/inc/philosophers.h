@@ -113,8 +113,8 @@ void	*ft_calloc(size_t nmemb, size_t size);
 ssize_t	ft_atoi(const char *nptr);
 int		ft_iswhitespace(int c);
 int		ft_isdigit(int c);
-int		ft_is_number(char *n);
 void	ft_putstr_fd(char *s, int fd);
+int		ft_is_number(char *n);
 
 /* ==== ACTIONS.C ==== */
 
@@ -150,7 +150,6 @@ int		destroy_philos(t_philo *philos, int n_philos);
 int		destroy_table(t_table *table);
 int		destroy_forks(t_fork *forks, int i);
 int		destroy_mutexes(t_table *table);
-int		end_destroy_mutexes(t_table	*table);
 
 /* ===== ERROR.C ===== */
 

@@ -16,23 +16,3 @@ int	ft_isdigit(int c)
 {
 	return (c >= '0' && c <= '9');
 }
-
-int	ft_isascii(int c)
-{
-	return (c >= 0 && c <= 127);
-}
-
-int	ft_isalpha(int c)
-{
-	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
-}
-
-int	ft_isalnum(int c)
-{
-	return (ft_isalpha(c) || ft_isdigit(c));
-}
-
-int	ft_iswhitespace(int c)
-{
-	return ((c >= 9 && c <= 13) || c == 32);
-}

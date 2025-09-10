@@ -12,6 +12,11 @@
 
 #include "philosophers.h"
 
+int	ft_isdigit(int c)
+{
+	return (c >= '0' && c <= '9');
+}
+
 int	ft_is_number(char *n)
 {
 	int	i;
